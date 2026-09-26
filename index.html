@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Ann Muthoki - Portfolio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+body{background:#f8f7ff}
+header{background:linear-gradient(135deg,#6a11cb,#2575fc);color:white;padding:60px 20px;text-align:center}
+header h1{margin:15px 0}
+.card{background:white;border-radius:15px;padding:20px;margin:20px auto;max-width:700px;box-shadow:0 4px 10px rgba(0,0,0,0.1)}
+.card h2{color:#6a11cb;margin-bottom:10px}
+.btn{background:white;color:#6a11cb;padding:10px 20px;border-radius:20px;text-decoration:none;display:inline-block;margin:5px;font-weight:bold}
+.btn-talk{background:#6a11cb;color:white;padding:12px 25px;border:none;border-radius:25px;cursor:pointer;margin-top:15px;width:100%;font-size:16px}
+</style>
+</head>
+<body>
+<header>
+<h1>Hi, I'm Ann Muthoki 👋</h1>
+<p>Diploma in Software Engineering | Passionate Developer</p>
+<p style="margin-top:10px;">Software Engineering student from Githurai 45, seeking attachment</p>
+<a class="btn" href="https://github.com/annmuthoki09-dev">My GitHub</a>
+</header>
+<div class="card"><h2>💻 Skills</h2><p>HTML, CSS, MySQL<br>Learning: Git, GitHub<br>Interested in: Web Development & Mobile Apps</p></div>
+<div class="card"><h2>🚀 About Me</h2><p>Software Engineering student from Githurai 45, seeking attachment opportunity to learn and build real-world products. Fast learner and ready to contribute to a team.</p></div>
+<div class="card"><h2>📬 Connect</h2><p>GitHub: annmuthoki09-dev<br>Email: annmuthoki09@gmail.com</p>
+<button class="btn-talk" onclick="sayHi()">Click Me - I Can Talk 🔊</button>
+<p id="msg" style="margin-top:10px;color:#6a11cb;font-weight:bold;text-align:center;"></p>
+</div>
+<script>
+function sayHi(){
+alert("Hi Ann! You are a programmer!");
+document.getElementById("msg").innerText="🎉 Yes Ann! JavaScript works!";
+let s=new SpeechSynthesisUtterance("Hello! I am Ann Muthoki, a passionate software developer from Githurai 45");
+window.speechSynthesis.speak(s);
+}
+</script>
+</body>
+</html>
