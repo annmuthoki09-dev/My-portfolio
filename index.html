@@ -5,17 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ann Muthoki | Portfolio</title>
 <style>
-body { font-family: Arial, sans-serif; margin:0; background:#f8f9ff; color:#222; }
+body { font-family: Arial, sans-serif; margin:0; background:#e6e9ff; color:#222; }
 header { background: linear-gradient(135deg,#6a11cb,#2575fc); color:white; text-align:center; padding:60px 20px; }
-header h1 { font-size:2.5em; margin:0; }
-header p { font-size:1.2em; opacity:0.9; }
+header h1 { font-size:2.8em; margin:0; }
+header p { font-size:1.3em; opacity:0.95; margin-top:10px; }
 .container { max-width:900px; margin:auto; padding:30px 20px; }
-.card { background:white; border-radius:15px; padding:25px; margin-bottom:25px; box-shadow:0 5px 15px rgba(0,0,0,0.1); }
-.skills span { display:inline-block; background:#eef2ff; color:#2575fc; padding:8px 14px; border-radius:20px; margin:5px; font-weight:bold; border:1px solid #d0d9ff; }
-.btn { background:#2575fc; color:white; border:none; padding:12px 22px; border-radius:25px; cursor:pointer; font-size:16px; margin:5px; }
+.card { background:white; border-radius:18px; padding:28px; margin-bottom:25px; box-shadow:0 8px 20px rgba(0,0,0,0.12); }
+.skills span { display:inline-block; background:#eef2ff; color:#2575fc; padding:9px 16px; border-radius:20px; margin:6px; font-weight:bold; border:1px solid #c5d0ff; }
+.btn { background:#2575fc; color:white; border:none; padding:13px 24px; border-radius:25px; cursor:pointer; font-size:16px; margin:6px; font-weight:bold; }
 .btn:hover { background:#1a5ed6; }
-input, textarea { width:100%; padding:12px; margin:8px 0; border-radius:8px; border:1px solid #ccc; font-size:15px; box-sizing:border-box; }
-footer { text-align:center; padding:20px; color:#777; }
+input, textarea { width:100%; padding:13px; margin:10px 0; border-radius:10px; border:1px solid #ccc; font-size:15px; box-sizing:border-box; }
+footer { text-align:center; padding:25px; color:#555; font-weight:bold; }
 </style>
 </head>
 <body>
@@ -30,7 +30,7 @@ footer { text-align:center; padding:20px; color:#777; }
 
 <div class="card">
 <h2>About Me</h2>
-<p>Hello! I'm Ann Muthoki, a passionate IT student at university. I love building clean and interactive websites. I am currently seeking an attachment opportunity to grow my skills in a real company environment.</p>
+<p>Hello! I'm Ann Muthoki, a passionate IT student. I love building clean and interactive websites. I am currently seeking an attachment opportunity to grow my skills in a real company.</p>
 </div>
 
 <div class="card">
@@ -51,7 +51,7 @@ footer { text-align:center; padding:20px; color:#777; }
 <form action="https://formspree.io/f/xldplblg" method="POST">
 <input type="text" name="name" placeholder="Your Name / Company Name" required>
 <input type="email" name="email" placeholder="Your Email Address" required>
-<textarea name="message" rows="5" placeholder="Your Message - e.g. We would like to offer you an attachment..." required></textarea>
+<textarea name="message" rows="5" placeholder="Your Message..." required></textarea>
 <button type="submit" class="btn">Send Message 🚀</button>
 </form>
 </div>
@@ -66,7 +66,6 @@ footer { text-align:center; padding:20px; color:#777; }
 function talk() {
   const text = "Hello! My name is Ann Muthoki. I am an IT student passionate about web development. I know HTML, CSS, basic JavaScript, and SQL. I am looking for an attachment opportunity.";
   const speech = new SpeechSynthesisUtterance(text);
-  speech.rate = 0.9;
   window.speechSynthesis.speak(speech);
 }
 </script>
