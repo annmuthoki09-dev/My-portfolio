@@ -3,63 +3,68 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ann Muthoki | Software Engineer - Seeking Attachment</title>
+<title>Ann Muthoki | Portfolio</title>
 <style>
-body { margin:0; font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea, #764ba2); color:white; text-align:center; }
-.container { max-width:900px; margin:0 auto; padding:20px; }
-.card { background: rgba(255,255,255,0.95); color:#333; padding:30px; border-radius:20px; margin:20px 0; box-shadow:0 10px 30px rgba(0,0,0,0.2); }
-h1 { font-size:2.5em; margin-bottom:5px; color:#764ba2; }
-.badge { background:#ff4081; color:white; padding:8px 15px; border-radius:20px; display:inline-block; margin:10px; font-weight:bold; }
-.talk-btn { background: linear-gradient(45deg, #667eea, #764ba2); color:white; border:none; padding:15px 30px; border-radius:50px; font-size:18px; cursor:pointer; margin:15px; }
-.talk-btn:hover { transform:scale(1.05); }
-input, textarea { width:90%; padding:12px; margin:8px 0; border:2px solid #ddd; border-radius:10px; font-size:16px; }
-.send-btn { background:#764ba2; color:white; border:none; padding:12px 30px; border-radius:10px; font-size:16px; cursor:pointer; width:90%; }
-.skills span { background:#667eea; color:white; padding:6px 12px; border-radius:15px; margin:5px; display:inline-block; }
-a { color:#764ba2; text-decoration:none; font-weight:bold; }
+body { font-family: Arial, sans-serif; margin:0; background:#f8f9ff; color:#222; }
+header { background: linear-gradient(135deg,#6a11cb,#2575fc); color:white; text-align:center; padding:60px 20px; }
+header h1 { font-size:2.5em; margin:0; }
+header p { font-size:1.2em; opacity:0.9; }
+.container { max-width:900px; margin:auto; padding:30px 20px; }
+.card { background:white; border-radius:15px; padding:25px; margin-bottom:25px; box-shadow:0 5px 15px rgba(0,0,0,0.1); }
+.skills span { display:inline-block; background:#eef2ff; color:#2575fc; padding:8px 14px; border-radius:20px; margin:5px; font-weight:bold; border:1px solid #d0d9ff; }
+.btn { background:#2575fc; color:white; border:none; padding:12px 22px; border-radius:25px; cursor:pointer; font-size:16px; margin:5px; }
+.btn:hover { background:#1a5ed6; }
+input, textarea { width:100%; padding:12px; margin:8px 0; border-radius:8px; border:1px solid #ccc; font-size:15px; box-sizing:border-box; }
+footer { text-align:center; padding:20px; color:#777; }
 </style>
 </head>
 <body>
+
+<header>
+<h1>Ann Muthoki</h1>
+<p>IT Student | Web Developer | Seeking Attachment</p>
+<button class="btn" onclick="talk()">🔊 Click to Hear My Intro</button>
+</header>
+
 <div class="container">
 
 <div class="card">
-<h1>Ann Muthoki</h1>
-<p>Software Engineering Student | Kiriri Women's University</p>
-<div class="badge">📍 Githurai 45, Nairobi</div>
-<div class="badge">🎓 Seeking Attachment</div>
-
-<button class="talk-btn" onclick="talk()">🔊 Click Me - I Can Talk</button>
-<p>Welcome to my portfolio!</p>
-</div>
-
-<div class="card">
 <h2>About Me</h2>
-<p>I'm a passionate Diploma in Software Engineering student seeking an industrial attachment opportunity where I can apply my skills in HTML, CSS, JavaScript, Git and GitHub.</p>
+<p>Hello! I'm Ann Muthoki, a passionate IT student at university. I love building clean and interactive websites. I am currently seeking an attachment opportunity to grow my skills in a real company environment.</p>
+</div>
+
+<div class="card">
+<h2>My Skills</h2>
 <div class="skills">
-<span>HTML5</span><span>CSS3</span><span>JavaScript</span><span>Git & GitHub</span><span>Responsive Design</span><span>Web Speech API</span>
+<span>HTML5</span>
+<span>CSS3</span>
+<span>JavaScript (Basic)</span>
+<span>SQL</span>
+<span>Git & GitHub</span>
+<span>Responsive Design</span>
 </div>
 </div>
 
 <div class="card">
-<h2>📬 Contact Me - Let's Work Together!</h2>
-<p>Are you a company looking for an attachee? Send me a message!</p>
-
-<!-- THIS FORM WILL SEND TO YOUR EMAIL -->
-<form action="https://formspree.io/f/xldpnqya" method="POST">
+<h2>Contact Me</h2>
+<p>Companies can contact me directly through this form. I will receive your message in my email!</p>
+<form action="https://formspree.io/f/xldplblg" method="POST">
 <input type="text" name="name" placeholder="Your Name / Company Name" required>
-<input type="email" name="email" placeholder="Your Email" required>
-<textarea name="message" rows="4" placeholder="Hello Ann, we have an attachment opportunity..." required></textarea>
-<button type="submit" class="send-btn">Send Message 🚀</button>
+<input type="email" name="email" placeholder="Your Email Address" required>
+<textarea name="message" rows="5" placeholder="Your Message - e.g. We would like to offer you an attachment..." required></textarea>
+<button type="submit" class="btn">Send Message 🚀</button>
 </form>
-
-<p style="margin-top:15px;">Or email me directly: <br><a href="mailto:annmuthoki09@gmail.com">annmuthoki09@gmail.com</a></p>
-<p>My Live Portfolio: <br><a href="https://annmuthoki09-dev.github.io/My-portfolio/" target="_blank">annmuthoki09-dev.github.io/My-portfolio/</a></p>
 </div>
 
 </div>
+
+<footer>
+<p>© 2026 Ann Muthoki | Built with ❤️</p>
+</footer>
 
 <script>
 function talk() {
-  const text = "Hello! I am Ann Muthoki, a Software Engineering student from Kiriri Womens University, Githurai 45. I am seeking an industrial attachment opportunity. Welcome to my portfolio website!";
+  const text = "Hello! My name is Ann Muthoki. I am an IT student passionate about web development. I know HTML, CSS, basic JavaScript, and SQL. I am looking for an attachment opportunity.";
   const speech = new SpeechSynthesisUtterance(text);
   speech.rate = 0.9;
   window.speechSynthesis.speak(speech);
