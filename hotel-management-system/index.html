@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Management System</title>
+    <link rel="stylesheet" href="style.css">
+<style>
+/* General page styling */
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f4f6f9;
+    color: #333;
+}
+
+/* Header */
+header {
+    background-color: #123456;
+    color: white;
+    text-align: center;
+    padding: 25px 15px;
+}
+
+header h1 {
+    margin: 0 0 10px;
+}
+
+header p {
+    margin: 0;
+}
+
+/* Navigation */
+nav {
+    background-color: #0b2239;
+    padding: 15px;
+    text-align: center;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-weight: bold;
+}
+
+nav a:hover {
+    color: #f4c542;
+}
+
+/* Main content */
+main {
+    width: 95%;
+    max-width: 1400px;
+    margin: 25px auto;
+}
+
+section {
+    background-color: white;
+    padding: 25px;
+    margin-bottom: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+h2 {
+    color: #123456;
+    margin-top: 0;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 12px;
+}
+
+/* Dashboard cards */
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background-color: #123456;
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.card h3 {
+    font-size: 16px;
+}
+
+.card p {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* Form */
+form {
+    max-width: 650px;
+}
+
+label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 7px;
+    font-weight: bold;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 15px;
+}
+
+input:focus,
+select:focus {
+    outline: 2px solid #2878b5;
+    border-color: transparent;
+}
+
+/* Price display */
+.price-box {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #eaf4ff;
+    border-radius: 5px;
+}
+
+#totalPrice {
+    font-weight: bold;
+    color: #123456;
+}
+
+/* Buttons */
+button {
+    background-color: #123456;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    margin: 5px 5px 5px 0;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+button:hover {
+    opacity: 0.85;
+}
+
+.secondary-button {
+    background-color: #6c757d;
+}
+
+.checkin-button {
+    background-color: #198754;
+}
+
+.checkout-button {
+    background-color: #0d6efd;
+}
+
+.cancel-button {
+    background-color: #dc3545;
+}
+
+/* Messages */
+#message {
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+/* Search */
+#searchBooking {
+    margin-bottom: 20px;
+    max-width: 450px;
+}
+
+/* Booking table */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1100px;
+}
+
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #123456;
+    color: white;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f2f6fa;
+}
+
+tbody tr:hover {
+    background-color: #eaf4ff;
+}
+
+td button {
+    margin: 3px;
+    white-space: nowrap;
+}
+
+/* Status labels */
+.status {
+    display: inline-block;
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.status-Booked {
+    background-color: #fff3cd;
+    color: #664d03;
+}
+
+.status-Checked-in {
+    background-color: #d1e7dd;
+    color: #0f5132;
+}
+
+.status-Checked-out {
+    background-color: #cfe2ff;
+    color: #084298;
+}
+
+.status-Cancelled {
+    background-color: #f8d7da;
+    color: #842029;
+}
+
+/* Footer */
+footer {
+    background-color: #0b2239;
+    color: white;
+    text-align: center;
+    padding: 18px;
+    margin-top: 30px;
+}
+
+/* Responsive layout for phones and tablets */
+@media (max-width: 800px) {
+    .dashboard-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    nav a {
+        display: inline-block;
+        margin: 7px;
+    }
+
+    section {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 450px) {
+    .dashboard-cards {
+        grid-template-columns: 1fr;
+    }
+
+    header h1 {
+        font-size: 24px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+    <header>
+        <h1>🏨 Grand Palace Hotel</h1>
+        <p>Hotel Management System</p>
+    </header>
+
+    <nav>
+        <a href="#dashboard">Dashboard</a>
+        <a href="#booking">New Booking</a>
+        <a href="#bookings">Manage Bookings</a>
+    </nav>
+
+    <main>
+
+        <!-- Dashboard -->
+        <section id="dashboard">
+            <h2>Dashboard</h2>
+
+            <div class="dashboard-cards">
+
+                <div class="card">
+                    <h3>Total Rooms</h3>
+                    <p id="totalRooms">10</p>
+                </div>
+
+                <div class="card">
+                    <h3>Available Rooms</h3>
+                    <p id="availableRooms">10</p>
+                </div>
+
+                <div class="card">
+                    <h3>Active Bookings</h3>
+                    <p id="activeBookings">0</p>
+                </div>
+
+                <div class="card">
+                    <h3>Checked-in Guests</h3>
+                    <p id="checkedInGuests">0</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Booking Form -->
+        <section id="booking">
+            <h2>Register a Guest / New Booking</h2>
+
+            <form id="bookingForm">
+
+                <label for="guestName">Guest Full Name:</label>
+                <input
+                    type="text"
+                    id="guestName"
+                    placeholder="Enter guest name"
+                    required
+                >
+
+                <label for="phone">Phone Number:</label>
+                <input
+                    type="tel"
+                    id="phone"
+                    placeholder="Enter phone number"
+                    required
+                >
+
+                <label for="roomType">Room Type:</label>
+                <select id="roomType" required>
+                    <option value="">Select Room Type</option>
+                    <option value="Single">Single Room - KSh 2,000</option>
+                    <option value="Double">Double Room - KSh 3,500</option>
+                    <option value="Deluxe">Deluxe Room - KSh 5,000</option>
+                    <option value="Suite">Suite - KSh 8,000</option>
+                </select>
+
+                <label for="checkIn">Check-in Date:</label>
+                <input type="date" id="checkIn" required>
+
+                <label for="checkOut">Check-out Date:</label>
+                <input type="date" id="checkOut" required>
+
+                <div class="price-box">
+                    <strong>Estimated Total:</strong>
+                    <span id="totalPrice">KSh 0</span>
+                </div>
+
+                <button type="submit">Book Room</button>
+
+                <button type="reset" class="secondary-button">
+                    Clear Form
+                </button>
+
+            </form>
+
+            <p id="message" role="status"></p>
+        </section>
+
+        <!-- Booking Records -->
+        <section id="bookings">
+            <h2>Guest Bookings</h2>
+
+            <input
+                type="search"
+                id="searchBooking"
+                placeholder="Search by guest name or phone..."
+                aria-label="Search bookings"
+            >
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>Guest Name</th>
+                            <th>Phone</th>
+                            <th>Room</th>
+                            <th>Check-in</th>
+                            <th>Check-out</th>
+                            <th>Total (KSh)</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="bookingTable">
+                        <!-- JavaScript inserts bookings here -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Grand Palace Hotel | Hotel Management System</p>
+    </footer>
+
+    <script src="script.js"></script>
+<script>
+// ========================================
+// HOTEL MANAGEMENT SYSTEM
+// ========================================
+
+// Room prices per night in Kenyan Shillings
+const roomPrices = {
+    Single: 2000,
+    Double: 3500,
+    Deluxe: 5000,
+    Suite: 8000
+};
+
+// Number of rooms available for each type
+const roomCapacity = {
+    Single: 3,
+    Double: 3,
+    Deluxe: 2,
+    Suite: 2
+};
+
+const TOTAL_ROOMS = Object.values(roomCapacity)
+    .reduce((sum, count) => sum + count, 0);
+
+// Get HTML elements
+const bookingForm = document.getElementById("bookingForm");
+const guestName = document.getElementById("guestName");
+const phone = document.getElementById("phone");
+const roomType = document.getElementById("roomType");
+const checkIn = document.getElementById("checkIn");
+const checkOut = document.getElementById("checkOut");
+const totalPrice = document.getElementById("totalPrice");
+const bookingTable = document.getElementById("bookingTable");
+const searchBooking = document.getElementById("searchBooking");
+const message = document.getElementById("message");
+
+// Load saved bookings from the browser
+let bookings = [];
+
+try {
+    const savedBookings = localStorage.getItem("hotelBookings");
+
+    if (savedBookings) {
+        const parsedBookings = JSON.parse(savedBookings);
+
+        if (Array.isArray(parsedBookings)) {
+            bookings = parsedBookings;
+        }
+    }
+} catch (error) {
+    console.error("Could not load saved bookings:", error);
+}
+
+// ========================================
+// HELPER FUNCTIONS
+// ========================================
+
+// Format money in Kenyan Shillings
+function formatMoney(amount) {
+    return "KSh " + Number(amount).toLocaleString("en-KE");
+}
+
+// Safely display guest information in HTML
+function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, character => {
+        const entities = {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        };
+
+        return entities[character];
+    });
+}
+
+// Save bookings in browser storage
+function saveBookings() {
+    try {
+        localStorage.setItem(
+            "hotelBookings",
+            JSON.stringify(bookings)
+        );
+
+        return true;
+    } catch (error) {
+        console.error("Could not save bookings:", error);
+
+        showMessage(
+            "Unable to save data. Check your browser storage.",
+            true
+        );
+
+        return false;
+    }
+}
+
+// Display a message to the user
+function showMessage(text, isError = false) {
+    message.textContent = text;
+
+    message.style.color = isError ? "#dc3545" : "#198754";
+}
+
+// Generate a booking ID
+function generateBookingId() {
+    return "BK-" + Date.now() + "-" +
+        Math.floor(Math.random() * 1000);
+}
+
+// Convert a date to a UTC day number
+// This avoids errors caused by daylight-saving changes.
+function dateNumber(dateString) {
+    const parts = dateString.split("-").map(Number);
+
+    return Date.UTC(
+        parts[0],
+        parts[1] - 1,
+        parts[2]
+    ) / 86400000;
+}
+
+// Calculate number of nights
+function calculateNights(start, end) {
+    return dateNumber(end) - dateNumber(start);
+}
+
+// Check whether two booking periods overlap.
+// Check-out day is not counted as an occupied night.
+function datesOverlap(start1, end1, start2, end2) {
+    return (
+        dateNumber(start1) < dateNumber(end2) &&
+        dateNumber(end1) > dateNumber(start2)
+    );
+}
+
+// ========================================
+// ROOM AVAILABILITY
+// ========================================
+
+// Count rooms already occupied or reserved
+// during a requested date range.
+function getOccupiedRooms(type, start, end, excludeId = null) {
+    return bookings.filter(booking => {
+        if (booking.roomType !== type) {
+            return false;
+        }
+
+        if (booking.id === excludeId) {
+            return false;
+        }
+
+        if (
+            booking.status === "Cancelled" ||
+            booking.status === "Checked-out"
+        ) {
+            return false;
+        }
+
+        return datesOverlap(
+            start,
+            end,
+            booking.checkIn,
+            booking.checkOut
+        );
+    }).length;
+}
+
+// Check if a room type has space for the dates
+function isRoomAvailable(type, start, end, excludeId = null) {
+    const occupied = getOccupiedRooms(
+        type,
+        start,
+        end,
+        excludeId
+    );
+
+    return occupied < roomCapacity[type];
+}
+
+// ========================================
+// PRICE CALCULATION
+// ========================================
+
+function updateTotalPrice() {
+    const type = roomType.value;
+    const start = checkIn.value;
+    const end = checkOut.value;
+
+    if (!type || !start || !end) {
+        totalPrice.textContent = formatMoney(0);
+        return;
+    }
+
+    const nights = calculateNights(start, end);
+
+    if (nights <= 0) {
+        totalPrice.textContent = "Invalid dates";
+        return;
+    }
+
+    const total = roomPrices[type] * nights;
+
+    totalPrice.textContent = formatMoney(total);
+}
+
+// Update price when form values change
+roomType.addEventListener("change", updateTotalPrice);
+checkIn.addEventListener("change", updateTotalPrice);
+checkOut.addEventListener("change", updateTotalPrice);
+
+// ========================================
+// SET DATE RESTRICTIONS
+// ========================================
+
+function setDateRestrictions() {
+    const today = new Date();
+
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+
+    const todayString = `${year}-${month}-${day}`;
+
+    checkIn.min = todayString;
+    checkOut.min = checkIn.value || todayString;
+}
+
+// Update the minimum check-out date
+checkIn.addEventListener("change", () => {
+    checkOut.min = checkIn.value;
+
+    if (
+        checkOut.value &&
+        checkOut.value <= checkIn.value
+    ) {
+        checkOut.value = "";
+    }
+
+    updateTotalPrice();
+});
+
+// ========================================
+// CREATE A NEW BOOKING
+// ========================================
+
+bookingForm.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const name = guestName.value.trim();
+    const guestPhone = phone.value.trim();
+    const type = roomType.value;
+    const start = checkIn.value;
+    const end = checkOut.value;
+
+    // Validate guest details
+    if (!name || !guestPhone || !type || !start || !end) {
+        showMessage(
+            "Please fill in all the required fields.",
+            true
+        );
+
+        return;
+    }
+
+    // Validate room type
+    if (!Object.prototype.hasOwnProperty.call(roomPrices, type)) {
+        showMessage("Please select a valid room type.", true);
+        return;
+    }
+
+    // Validate dates
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const todayString = [
+        today.getFullYear(),
+        String(today.getMonth() + 1).padStart(2, "0"),
+        String(today.getDate()).padStart(2, "0")
+    ].join("-");
+
+    if (start < todayString) {
+        showMessage(
+            "Check-in date cannot be in the past.",
+            true
+        );
+
+        return;
+    }
+
+    const nights = calculateNights(start, end);
+
+    if (nights <= 0) {
+        showMessage(
+            "Check-out must be after check-in.",
+            true
+        );
+
+        return;
+    }
+
+    // Check room availability for the requested dates
+    if (!isRoomAvailable(type, start, end)) {
+        showMessage(
+            "Sorry, no " + type +
+            " rooms are available for those dates.",
+            true
+        );
+
+        return;
+    }
+
+    // Calculate total cost
+    const total = roomPrices[type] * nights;
+
+    // Create booking record
+    const booking = {
+        id: generateBookingId(),
+        guestName: name,
+        phone: guestPhone,
+        roomType: type,
+        checkIn: start,
+        checkOut: end,
+        nights: nights,
+        total: total,
+        status: "Booked"
+    };
+
+    // Store the booking
+    bookings.push(booking);
+
+    if (!saveBookings()) {
+        bookings.pop();
+        return;
+    }
+
+    // Refresh the dashboard and table
+    displayBookings();
+    updateDashboard();
+
+    // Clear the form
+    bookingForm.reset();
+
+    totalPrice.textContent = formatMoney(0);
+
+    setDateRestrictions();
+
+    showMessage(
+        "Booking successful! Booking ID: " + booking.id
+    );
+});
+
+// ========================================
+// DISPLAY BOOKINGS
+// ========================================
+
+function displayBookings() {
+    const searchTerm = searchBooking.value
+        .trim()
+        .toLowerCase();
+
+    const filteredBookings = bookings.filter(booking => {
+        return (
+            booking.guestName.toLowerCase().includes(searchTerm) ||
+            booking.phone.toLowerCase().includes(searchTerm) ||
+            booking.id.toLowerCase().includes(searchTerm)
+        );
+    });
+
+    bookingTable.innerHTML = "";
+
+    if (filteredBookings.length === 0) {
+        const row = document.createElement("tr");
+        const cell = document.createElement("td");
+
+        cell.colSpan = 9;
+        cell.textContent = "No bookings found.";
+
+        row.appendChild(cell);
+        bookingTable.appendChild(row);
+
+        return;
+    }
+
+    filteredBookings.forEach(booking => {
+        const row = document.createElement("tr");
+
+        let actions = "";
+
+        if (booking.status === "Booked") {
+            actions = `
+                <button
+                    class="checkin-button"
+                    data-action="checkin"
+                    data-id="${escapeHTML(booking.id)}">
+                    Check In
+                </button>
+
+                <button
+                    class="cancel-button"
+                    data-action="cancel"
+                    data-id="${escapeHTML(booking.id)}">
+                    Cancel
+                </button>
+            `;
+        } else if (booking.status === "Checked-in") {
+            actions = `
+                <button
+                    class="checkout-button"
+                    data-action="checkout"
+                    data-id="${escapeHTML(booking.id)}">
+                    Check Out
+                </button>
+            `;
+        } else {
+            actions = "-";
+        }
+
+        row.innerHTML = `
+            <td>${escapeHTML(booking.id)}</td>
+            <td>${escapeHTML(booking.guestName)}</td>
+            <td>${escapeHTML(booking.phone)}</td>
+            <td>${escapeHTML(booking.roomType)}</td>
+            <td>${escapeHTML(booking.checkIn)}</td>
+            <td>${escapeHTML(booking.checkOut)}</td>
+            <td>${formatMoney(booking.total)}</td>
+            <td>
+                <span class="status status-${escapeHTML(booking.status)}">
+                    ${escapeHTML(booking.status)}
+                </span>
+            </td>
+            <td>${actions}</td>
+        `;
+
+        bookingTable.appendChild(row);
+    });
+}
+
+// Search bookings as the user types
+searchBooking.addEventListener("input", displayBookings);
+
+// ========================================
+// CHECK IN, CHECK OUT AND CANCEL
+// ========================================
+
+bookingTable.addEventListener("click", function(event) {
+    const button = event.target.closest("button[data-action]");
+
+    if (!button) {
+        return;
+    }
+
+    const bookingId = button.dataset.id;
+    const action = button.dataset.action;
+
+    const booking = bookings.find(
+        item => item.id === bookingId
+    );
+
+    if (!booking) {
+        showMessage("Booking not found.", true);
+        return;
+    }
+
+    // Check in a guest
+    if (action === "checkin") {
+        if (booking.status !== "Booked") {
+            showMessage("This booking cannot be checked in.", true);
+            return;
+        }
+
+        // Only allow check-in during the booked date range
+        const today = new Date();
+
+        const todayString = [
+            today.getFullYear(),
+            String(today.getMonth() + 1).padStart(2, "0"),
+            String(today.getDate()).padStart(2, "0")
+        ].join("-");
+
+        if (
+            todayString < booking.checkIn ||
+            todayString >= booking.checkOut
+        ) {
+            showMessage(
+                "Check-in is allowed only during the booked stay.",
+                true
+            );
+
+            return;
+        }
+
+        booking.status = "Checked-in";
+
+        if (!saveBookings()) {
+            booking.status = "Booked";
+            return;
+        }
+
+        showMessage(
+            booking.guestName + " has checked in successfully."
+        );
+    }
+
+    // Check out a guest
+    else if (action === "checkout") {
+        if (booking.status !== "Checked-in") {
+            showMessage(
+                "Only checked-in guests can check out.",
+                true
+            );
+
+            return;
+        }
+
+        booking.status = "Checked-out";
+
+        if (!saveBookings()) {
+            booking.status = "Checked-in";
+            return;
+        }
+
+        showMessage(
+            booking.guestName + " has checked out successfully."
+        );
+    }
+
+    // Cancel a booking
+    else if (action === "cancel") {
+        if (booking.status !== "Booked") {
+            showMessage(
+                "Only bookings that have not checked in can be cancelled.",
+                true
+            );
+
+            return;
+        }
+
+        const confirmed = confirm(
+            "Are you sure you want to cancel the booking for " +
+            booking.guestName + "?"
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        booking.status = "Cancelled";
+
+        if (!saveBookings()) {
+            booking.status = "Booked";
+            return;
+        }
+
+        showMessage("Booking cancelled successfully.");
+    }
+
+    displayBookings();
+    updateDashboard();
+});
+
+// ========================================
+// UPDATE DASHBOARD
+// ========================================
+
+function updateDashboard() {
+    document.getElementById("totalRooms").textContent =
+        TOTAL_ROOMS;
+
+    // Count bookings occupying rooms today
+    const today = new Date();
+
+    const todayString = [
+        today.getFullYear(),
+        String(today.getMonth() + 1).padStart(2, "0"),
+        String(today.getDate()).padStart(2, "0")
+    ].join("-");
+
+    const occupiedToday = bookings.filter(booking => {
+        return (
+            booking.status !== "Cancelled" &&
+            booking.status !== "Checked-out" &&
+            booking.checkIn <= todayString &&
+            booking.checkOut > todayString
+        );
+    }).length;
+
+    document.getElementById("availableRooms").textContent =
+        TOTAL_ROOMS - occupiedToday;
+
+    const active = bookings.filter(booking => {
+        return (
+            booking.status === "Booked" ||
+            booking.status === "Checked-in"
+        );
+    }).length;
+
+    document.getElementById("activeBookings").textContent =
+        active;
+
+    const checkedIn = bookings.filter(booking => {
+        return booking.status === "Checked-in";
+    }).length;
+
+    document.getElementById("checkedInGuests").textContent =
+        checkedIn;
+}
+
+// ========================================
+// INITIALIZE THE SYSTEM
+// ========================================
+
+setDateRestrictions();
+displayBookings();
+updateDashboard();
+updateTotalPrice();
+</script>
+</body>
+</html  
+
+</body>
+</html>
