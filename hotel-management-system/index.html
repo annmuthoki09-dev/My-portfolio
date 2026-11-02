@@ -18,7 +18,7 @@
         header p { margin: 0; }
 
         nav { background-color: #0b2239; padding: 15px; text-align: center; }
-        nav a { color: white; text-decoration: none; margin: 0 15px; font-weight: bold; }
+        nav a { color: white; text-decoration: none; margin: 0 12px; font-weight: bold; font-size: 14px; }
         nav a:hover { color: #f4c542; }
 
         main { width: 95%; max-width: 1400px; margin: 25px auto; }
@@ -71,11 +71,16 @@
         .hk-card { border: 1px solid #ccc; padding: 15px; border-radius: 6px; background: #fafafa; }
         .hk-card h4 { margin: 0 0 10px; color: #123456; }
 
+        .reviews-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin-top: 15px; }
+        .review-card { border: 1px solid #e5e7eb; padding: 15px; border-radius: 6px; background: #fdfdfd; }
+        .review-card h4 { margin: 0 0 5px; color: #123456; }
+        .stars { color: #f59e0b; font-weight: bold; margin-bottom: 5px; }
+
         footer { background-color: #0b2239; color: white; text-align: center; padding: 18px; margin-top: 30px; }
 
         @media (max-width: 800px) {
             .dashboard-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-            nav a { display: inline-block; margin: 7px; }
+            nav a { display: inline-block; margin: 5px; }
             section { padding: 15px; }
             .auth-button { float: none; margin-top: 10px; display: block; width: 100%; }
         }
@@ -89,7 +94,7 @@
 
     <header>
         <h1>🏨 Grand Palace Hotel & Resort</h1>
-        <p>Rooms, Dining, Drinks, Recreation & Event Services</p>
+        <p>Rooms, Dining, Drinks, Recreation, Events & Guest Feedback</p>
     </header>
 
     <nav>
@@ -97,6 +102,7 @@
         <a href="#booking">New Reservation</a>
         <a href="#bookings">Manage Bookings</a>
         <a href="#housekeeping">Housekeeping</a>
+        <a href="#reviews">Guest Reviews</a>
     </nav>
 
     <main>
@@ -163,6 +169,17 @@
                 <label for="checkOut">End Date:</label>
                 <input type="date" id="checkOut" required>
 
+                <label for="paymentMethod">Payment Method:</label>
+                <select id="paymentMethod" required>
+                    <option value="Cash">Cash at Desk</option>
+                    <option value="MPesa">M-Pesa Mobile Money</option>
+                </select>
+
+                <div id="mpesaBox" style="display: none; margin-top: 10px;">
+                    <label for="mpesaPhone">M-Pesa Phone Number:</label>
+                    <input type="tel" id="mpesaPhone" placeholder="e.g. 0712345678">
+                </div>
+
                 <label for="specialRequests">Special Requests / Dietary Notes:</label>
                 <textarea id="specialRequests" rows="2" placeholder="Optional notes (e.g. extra bed, vegetarian meal...)"></textarea>
 
@@ -193,8 +210,8 @@
                             <th>Guest Name</th>
                             <th>Phone</th>
                             <th>Service / Facility</th>
-                            <th>Check-in</th>
-                            <th>Check-out</th>
+                            <th>Dates</th>
+                            <th>Payment</th>
                             <th>Total (KSh)</th>
                             <th>Status</th>
                             <th>Actions</th>
@@ -212,6 +229,34 @@
             <h2>Housekeeping & Facility Status Tracker</h2>
             <div id="housekeepingGrid" class="housekeeping-grid">
                 <!-- Facility status cards rendered via JS -->
+            </div>
+        </section>
+
+        <!-- Guest Reviews & Ratings Section -->
+        <section id="reviews">
+            <h2>Guest Feedback & Ratings</h2>
+            <form id="reviewForm" style="max-width: 600px; margin-bottom: 25px;">
+                <label for="reviewGuestName">Your Name:</label>
+                <input type="text" id="reviewGuestName" placeholder="Enter your name" required>
+
+                <label for="reviewRating">Rating (1 to 5 Stars):</label>
+                <select id="reviewRating" required>
+                    <option value="5">⭐⭐⭐⭐⭐ (5 - Excellent)</option>
+                    <option value="4">⭐⭐⭐⭐ (4 - Very Good)</option>
+                    <option value="3">⭐⭐⭐ (3 - Average)</option>
+                    <option value="2">⭐⭐ (2 - Fair)</option>
+                    <option value="1">⭐ (1 - Poor)</option>
+                </select>
+
+                <label for="reviewComment">Your Experience / Feedback:</label>
+                <textarea id="reviewComment" rows="3" placeholder="Tell us about your room, boat riding experience, or dining..." required></textarea>
+
+                <button type="submit" style="margin-top: 12px;">Submit Review</button>
+            </form>
+
+            <h3>Recent Guest Reviews</h3>
+            <div id="reviewsGrid" class="reviews-grid">
+                <!-- Rendered via JS -->
             </div>
         </section>
 
@@ -279,6 +324,9 @@
         const roomImage = document.getElementById("roomImage");
         const checkIn = document.getElementById("checkIn");
         const checkOut = document.getElementById("checkOut");
+        const paymentMethod = document.getElementById("paymentMethod");
+        const mpesaBox = document.getElementById("mpesaBox");
+        const mpesaPhone = document.getElementById("mpesaPhone");
         const specialRequests = document.getElementById("specialRequests");
         const totalPrice = document.getElementById("totalPrice");
         const bookingTable = document.getElementById("bookingTable");
@@ -288,9 +336,12 @@
         const authToggleBtn = document.getElementById("authToggleBtn");
         const exportCsvBtn = document.getElementById("exportCsvBtn");
         const housekeepingGrid = document.getElementById("housekeepingGrid");
+        const reviewForm = document.getElementById("reviewForm");
+        const reviewsGrid = document.getElementById("reviewsGrid");
 
         let bookings = [];
         let housekeepingStatus = {};
+        let reviews = [];
 
         // Load storage
         try {
@@ -309,6 +360,17 @@
                         housekeepingStatus[`${type}-${i}`] = "Clean";
                     }
                 });
+            }
+
+            const savedReviews = localStorage.getItem("hotelReviews");
+            if (savedReviews) {
+                const parsedRev = JSON.parse(savedReviews);
+                if (Array.isArray(parsedRev)) reviews = parsedRev;
+            } else {
+                reviews = [
+                    { name: "Grace W.", rating: "5", comment: "The boat riding experience was breathtaking! Highly recommend Grand Palace Resort." },
+                    { name: "David K.", rating: "5", comment: "Wonderful rooms and exceptional service from the front desk." }
+                ];
             }
         } catch (error) {
             console.error("Storage load error:", error);
@@ -329,6 +391,7 @@
             try {
                 localStorage.setItem("hotelBookings", JSON.stringify(bookings));
                 localStorage.setItem("hotelHousekeeping", JSON.stringify(housekeepingStatus));
+                localStorage.setItem("hotelReviews", JSON.stringify(reviews));
                 return true;
             } catch (error) {
                 showMessage("Unable to save data. Check browser storage settings.", true);
@@ -418,6 +481,7 @@
                         <p><strong>Booking ID:</strong> ${escapeHTML(booking.id)}</p>
                         <p><strong>Guest Name:</strong> ${escapeHTML(booking.guestName)}</p>
                         <p><strong>Phone Number:</strong> ${escapeHTML(booking.phone)}</p>
+                        <p><strong>Payment Method:</strong> ${escapeHTML(booking.paymentMethod)}</p>
                         <p><strong>Status:</strong> ${escapeHTML(booking.status)}</p>
                         <p><strong>Special Requests:</strong> ${escapeHTML(booking.specialRequests || 'None')}</p>
                         <table>
@@ -460,7 +524,7 @@
             }
 
             let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "Booking ID,Guest Name,Phone,Service Type,Check In,Check Out,Nights,Total (KSh),Status,Notes\n";
+            csvContent += "Booking ID,Guest Name,Phone,Service Type,Check In,Check Out,Nights,Payment Method,Total (KSh),Status,Notes\n";
 
             bookings.forEach(b => {
                 const row = [
@@ -471,6 +535,7 @@
                     `"${b.checkIn}"`,
                     `"${b.checkOut}"`,
                     `"${b.nights}"`,
+                    `"${b.paymentMethod}"`,
                     `"${b.total}"`,
                     `"${b.status}"`,
                     `"${(b.specialRequests || '').replace(/"/g, '""')}"`
@@ -487,6 +552,17 @@
             document.body.removeChild(link);
         });
 
+        // Payment Method Toggle
+        paymentMethod.addEventListener("change", () => {
+            if (paymentMethod.value === "MPesa") {
+                mpesaBox.style.display = "block";
+                mpesaPhone.required = true;
+            } else {
+                mpesaBox.style.display = "none";
+                mpesaPhone.required = false;
+            }
+        });
+
         // Staff PIN Toggle
         authToggleBtn.addEventListener("click", () => {
             if (isStaffAuthenticated) {
@@ -495,7 +571,7 @@
                 authToggleBtn.style.backgroundColor = "#ff9800";
                 showMessage("Logged out of Staff Mode.");
             } else {
-                const pin = prompt("Enter 4-digit Staff PIN:");
+                const pin = prompt("Enter 4-digit Staff PIN (default is 1234):");
                 if (pin === STAFF_PIN) {
                     isStaffAuthenticated = true;
                     authToggleBtn.textContent = "🔓 Staff Unlocked";
@@ -544,6 +620,7 @@
 
         resetBtn.addEventListener("click", () => {
             roomPreviewBox.style.display = "none";
+            mpesaBox.style.display = "none";
             totalPrice.textContent = formatMoney(0);
             message.textContent = "";
         });
@@ -556,6 +633,7 @@
             const type = roomType.value;
             const start = checkIn.value;
             const end = checkOut.value;
+            const payMethod = paymentMethod.value;
             const notes = specialRequests.value.trim();
 
             if (!name || !guestPhone || !type || !start || !end) {
@@ -574,6 +652,15 @@
                 return;
             }
 
+            if (payMethod === "MPesa") {
+                const mPhone = mpesaPhone.value.trim();
+                if (!mPhone) {
+                    showMessage("Please provide the M-Pesa phone number.", true);
+                    return;
+                }
+                alert(`Simulating M-Pesa STK push to ${mPhone} for ${formatMoney(roomPrices[type] * nights)}... Payment Confirmed!`);
+            }
+
             const booking = {
                 id: generateBookingId(),
                 guestName: name,
@@ -582,6 +669,7 @@
                 checkIn: start,
                 checkOut: end,
                 nights: nights,
+                paymentMethod: payMethod,
                 specialRequests: notes,
                 total: roomPrices[type] * nights,
                 status: "Booked"
@@ -599,6 +687,7 @@
 
             bookingForm.reset();
             roomPreviewBox.style.display = "none";
+            mpesaBox.style.display = "none";
             totalPrice.textContent = formatMoney(0);
             setDateRestrictions();
 
@@ -637,7 +726,7 @@
                         `;
                     }
                 } else {
-                    actions += `<span style="font-size:11px; color:#888;"> (Unlock Staff PIN to manage)</span>`;
+                    actions += `<span style="font-size:11px; color:#888;"> (Unlock Staff PIN)</span>`;
                 }
 
                 const row = document.createElement("tr");
@@ -646,8 +735,8 @@
                     <td>${escapeHTML(booking.guestName)}</td>
                     <td>${escapeHTML(booking.phone)}</td>
                     <td>${escapeHTML(booking.roomType)}</td>
-                    <td>${escapeHTML(booking.checkIn)}</td>
-                    <td>${escapeHTML(booking.checkOut)}</td>
+                    <td>${escapeHTML(booking.checkIn)} to ${escapeHTML(booking.checkOut)}</td>
+                    <td>${escapeHTML(booking.paymentMethod)}</td>
                     <td>${formatMoney(booking.total)}</td>
                     <td><span class="status status-${escapeHTML(booking.status)}">${escapeHTML(booking.status)}</span></td>
                     <td>${actions}</td>
@@ -674,7 +763,7 @@
             }
 
             if (!isStaffAuthenticated) {
-                alert("Please unlock Staff Mode first to perform check-ins or cancellations.");
+                alert("Please unlock Staff Mode first using PIN 1234.");
                 return;
             }
 
@@ -698,6 +787,37 @@
             updateDashboard();
         });
 
+        // Reviews Handler
+        reviewForm.addEventListener("submit", function(e) {
+            e.preventDefault();
+            const name = document.getElementById("reviewGuestName").value.trim();
+            const rating = document.getElementById("reviewRating").value;
+            const comment = document.getElementById("reviewComment").value.trim();
+
+            if (!name || !comment) return;
+
+            reviews.unshift({ name, rating, comment });
+            saveBookings();
+            renderReviews();
+            reviewForm.reset();
+            alert("Thank you for your feedback!");
+        });
+
+        function renderReviews() {
+            reviewsGrid.innerHTML = "";
+            reviews.forEach(r => {
+                const starsCount = "⭐".repeat(Number(r.rating) || 5);
+                const card = document.createElement("div");
+                card.className = "review-card";
+                card.innerHTML = `
+                    <h4>${escapeHTML(r.name)}</h4>
+                    <div class="stars">${starsCount}</div>
+                    <p style="margin: 0; font-size: 14px; color: #555;">${escapeHTML(r.comment)}</p>
+                `;
+                reviewsGrid.appendChild(card);
+            });
+        }
+
         function renderHousekeeping() {
             housekeepingGrid.innerHTML = "";
             Object.keys(housekeepingStatus).forEach(slotKey => {
@@ -711,7 +831,7 @@
                         <button onclick="toggleHousekeeping('${slotKey}', 'Clean')">Clean</button>
                         <button onclick="toggleHousekeeping('${slotKey}', 'Dirty')">Dirty</button>
                         <button onclick="toggleHousekeeping('${slotKey}', 'Maintenance')">Maintenance</button>
-                    ` : '<span style="font-size:11px; color:#888;">Unlock Staff PIN to change status</span>'}
+                    ` : '<span style="font-size:11px; color:#888;">Unlock Staff PIN</span>'}
                 `;
                 housekeepingGrid.appendChild(card);
             });
@@ -750,6 +870,7 @@
         setDateRestrictions();
         displayBookings();
         renderHousekeeping();
+        renderReviews();
         updateDashboard();
         updateTotalPrice();
     </script>
