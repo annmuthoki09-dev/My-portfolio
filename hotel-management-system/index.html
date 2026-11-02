@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hotel Management System</title>
+    <title>Hotel Management & Activities System</title>
     <style>
         /* General page styling */
         * {
@@ -130,7 +130,7 @@
             border-color: transparent;
         }
 
-        /* Room Preview Image Container */
+        /* Preview Image Container */
         .room-preview-box {
             margin-top: 12px;
             display: none;
@@ -310,13 +310,13 @@
 <body>
 
     <header>
-        <h1>🏨 Grand Palace Hotel</h1>
-        <p>Hotel Management System & Amenities</p>
+        <h1>🏨 Grand Palace Hotel & Resort</h1>
+        <p>Rooms, Dining, Drinks & Recreational Activities</p>
     </header>
 
     <nav>
         <a href="#dashboard">Dashboard</a>
-        <a href="#booking">New Booking</a>
+        <a href="#booking">New Reservation</a>
         <a href="#bookings">Manage Bookings</a>
     </nav>
 
@@ -328,13 +328,13 @@
 
             <div class="dashboard-cards">
                 <div class="card">
-                    <h3>Total Units</h3>
-                    <p id="totalRooms">12</p>
+                    <h3>Total Slots/Units</h3>
+                    <p id="totalRooms">22</p>
                 </div>
 
                 <div class="card">
-                    <h3>Available Units</h3>
-                    <p id="availableRooms">12</p>
+                    <h3>Available Slots</h3>
+                    <p id="availableRooms">22</p>
                 </div>
 
                 <div class="card">
@@ -351,7 +351,7 @@
 
         <!-- Booking Form -->
         <section id="booking">
-            <h2>Register a Guest / New Booking</h2>
+            <h2>Register Guest / Book Service</h2>
 
             <form id="bookingForm">
                 <label for="guestName">Guest Full Name:</label>
@@ -360,25 +360,28 @@
                 <label for="phone">Phone Number:</label>
                 <input type="tel" id="phone" placeholder="Enter phone number" required>
 
-                <label for="roomType">Room / Facility Type:</label>
+                <label for="roomType">Select Room, Activity or Package:</label>
                 <select id="roomType" required>
-                    <option value="">Select Room or Facility</option>
+                    <option value="">Select Service / Room Type</option>
                     <option value="Single">Single Room - KSh 2,000</option>
                     <option value="Double">Double Room - KSh 3,500</option>
                     <option value="Deluxe">Deluxe Room - KSh 5,000</option>
                     <option value="Suite">Suite - KSh 8,000</option>
-                    <option value="SwimmingPool">Swimming Pool Pass / Cabana - KSh 1,500</option>
+                    <option value="SwimmingPool">Swimming Pool Pass - KSh 1,500</option>
+                    <option value="BoatRiding">Boat Riding Experience - KSh 2,500</option>
+                    <option value="Food">Dining & Meal Plan - KSh 1,800</option>
+                    <option value="Drinks">Beverages & Bar Package - KSh 1,200</option>
                 </select>
 
                 <!-- Image Preview Box -->
                 <div id="roomPreviewBox" class="room-preview-box">
-                    <img id="roomImage" src="" alt="Facility Preview">
+                    <img id="roomImage" src="" alt="Service Preview">
                 </div>
 
-                <label for="checkIn">Check-in / Reservation Date:</label>
+                <label for="checkIn">Start Date / Session Date:</label>
                 <input type="date" id="checkIn" required>
 
-                <label for="checkOut">Check-out / End Date:</label>
+                <label for="checkOut">End Date:</label>
                 <input type="date" id="checkOut" required>
 
                 <div class="price-box">
@@ -395,7 +398,7 @@
 
         <!-- Booking Records -->
         <section id="bookings">
-            <h2>Guest Bookings</h2>
+            <h2>All Guest Bookings</h2>
 
             <input type="search" id="searchBooking" placeholder="Search by guest name or phone..." aria-label="Search bookings">
 
@@ -406,7 +409,7 @@
                             <th>Booking ID</th>
                             <th>Guest Name</th>
                             <th>Phone</th>
-                            <th>Facility / Room</th>
+                            <th>Service / Room</th>
                             <th>Check-in</th>
                             <th>Check-out</th>
                             <th>Total (KSh)</th>
@@ -424,35 +427,44 @@
     </main>
 
     <footer>
-        <p>&copy; 2026 Grand Palace Hotel | Hotel Management System</p>
+        <p>&copy; 2026 Grand Palace Hotel | Management System</p>
     </footer>
 
     <script>
-        // Prices per night / session in Kenyan Shillings
+        // Pricing per night/session in Kenyan Shillings
         const roomPrices = {
             Single: 2000,
             Double: 3500,
             Deluxe: 5000,
             Suite: 8000,
-            SwimmingPool: 1500
+            SwimmingPool: 1500,
+            BoatRiding: 2500,
+            Food: 1800,
+            Drinks: 1200
         };
 
-        // Preview image URLs including swimming pool
+        // Preview images including Boat Riding, Food, and Drinks
         const roomImages = {
             Single: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=600&q=80",
             Double: "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=600&q=80",
             Deluxe: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=600&q=80",
             Suite: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=600&q=80",
-            SwimmingPool: "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=600&q=80"
+            SwimmingPool: "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=600&q=80",
+            BoatRiding: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=600&q=80",
+            Food: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80",
+            Drinks: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=600&q=80"
         };
 
-        // Capacity configuration (including 4 pool slots)
+        // Capacity configuration for each category
         const roomCapacity = {
             Single: 3,
             Double: 3,
             Deluxe: 2,
             Suite: 2,
-            SwimmingPool: 4
+            SwimmingPool: 4,
+            BoatRiding: 4,
+            Food: 20,
+            Drinks: 20
         };
 
         const TOTAL_ROOMS = Object.values(roomCapacity).reduce((sum, count) => sum + count, 0);
@@ -558,7 +570,7 @@
             totalPrice.textContent = formatMoney(roomPrices[type] * nights);
         }
 
-        // Handle Image & Price updates on Room Selection
+        // Handle Image & Price updates on Selection Change
         roomType.addEventListener("change", () => {
             const selectedType = roomType.value;
             if (roomImages[selectedType]) {
@@ -614,7 +626,7 @@
             }
 
             if (!roomPrices[type]) {
-                showMessage("Please select a valid room or facility type.", true);
+                showMessage("Please select a valid service or room type.", true);
                 return;
             }
 
@@ -625,7 +637,7 @@
             }
 
             if (!isRoomAvailable(type, start, end)) {
-                showMessage("Sorry, no " + type + " units/slots are available for those dates.", true);
+                showMessage("Sorry, no slots available for " + type + " on those dates.", true);
                 return;
             }
 
