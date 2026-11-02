@@ -192,6 +192,10 @@
             background-color: #dc3545;
         }
 
+        .invoice-button {
+            background-color: #6f42c1;
+        }
+
         /* Messages */
         #message {
             font-weight: bold;
@@ -443,7 +447,7 @@
             Drinks: 1200
         };
 
-        // Preview images including person riding boat & romantic dining
+        // Preview images
         const roomImages = {
             Single: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=600&q=80",
             Double: "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=600&q=80",
@@ -557,4 +561,295 @@
             const end = checkOut.value;
 
             if (!type || !start || !end) {
-                totalPrice
+                totalPrice.textContent = formatMoney(0);
+                return;
+            }
+
+            const nights = calculateNights(start, end);
+            if (nights <= 0) {
+                totalPrice.textContent = "Invalid dates";
+                return;
+            }
+
+            totalPrice.textContent = formatMoney(roomPrices[type] * nights);
+        }
+
+        // Print Invoice Function
+        function printInvoice(booking) {
+            const invoiceWindow = window.open('', '_blank');
+            invoiceWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Invoice - ${escapeHTML(booking.id)}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 30px; color: #333; max-width: 800px; margin: auto; }
+                        .header { text-align: center; border-bottom: 2px solid #123456; padding-bottom: 15px; margin-bottom: 20px; }
+                        .header h1 { color: #123456; margin: 0; }
+                        .details { margin-bottom: 20px; }
+                        .details table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+                        .details th, .details td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+                        .details th { background-color: #123456; color: white; }
+                        .total { text-align: right; font-size: 18px; font-weight: bold; margin-top: 20px; color: #123456; }
+                        .footer { text-align: center; margin-top: 40px; font-size: 12px; color: #777; border-top: 1px solid #ddd; padding-top: 10px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>🏨 Grand Palace Hotel & Resort</h1>
+                        <p>Official Guest Invoice & Receipt</p>
+                    </div>
+                    <div class="details">
+                        <p><strong>Booking ID:</strong> ${escapeHTML(booking.id)}</p>
+                        <p><strong>Guest Name:</strong> ${escapeHTML(booking.guestName)}</p>
+                        <p><strong>Phone Number:</strong> ${escapeHTML(booking.phone)}</p>
+                        <p><strong>Booking Status:</strong> ${escapeHTML(booking.status)}</p>
+                        <table>
+                            <tr>
+                                <th>Service / Room Type</th>
+                                <th>Check-in Date</th>
+                                <th>Check-out Date</th>
+                                <th>Nights / Sessions</th>
+                                <th>Total (KSh)</th>
+                            </tr>
+                            <tr>
+                                <td>${escapeHTML(booking.roomType)}</td>
+                                <td>${escapeHTML(booking.checkIn)}</td>
+                                <td>${escapeHTML(booking.checkOut)}</td>
+                                <td>${escapeHTML(booking.nights)}</td>
+                                <td>${formatMoney(booking.total)}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="total">
+                        Grand Total: ${formatMoney(booking.total)}
+                    </div>
+                    <div class="footer">
+                        <p>Thank you for choosing Grand Palace Hotel & Resort! For inquiries, call front desk.</p>
+                    </div>
+                    <script>
+                        window.onload = function() { window.print(); }
+                    <\/script>
+                </body>
+                </html>
+            `);
+            invoiceWindow.document.close();
+        }
+
+        // Handle Image & Price updates on Selection Change
+        roomType.addEventListener("change", () => {
+            const selectedType = roomType.value;
+            if (roomImages[selectedType]) {
+                roomImage.src = roomImages[selectedType];
+                roomPreviewBox.style.display = "block";
+            } else {
+                roomPreviewBox.style.display = "none";
+            }
+            updateTotalPrice();
+        });
+
+        checkIn.addEventListener("change", () => {
+            checkOut.min = checkIn.value;
+            if (checkOut.value && checkOut.value <= checkIn.value) {
+                checkOut.value = "";
+            }
+            updateTotalPrice();
+        });
+
+        checkOut.addEventListener("change", updateTotalPrice);
+
+        function setDateRestrictions() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, "0");
+            const day = String(today.getDate()).padStart(2, "0");
+            const todayString = `${year}-${month}-${day}`;
+
+            checkIn.min = todayString;
+            checkOut.min = checkIn.value || todayString;
+        }
+
+        // Form Reset Event
+        resetBtn.addEventListener("click", () => {
+            roomPreviewBox.style.display = "none";
+            totalPrice.textContent = formatMoney(0);
+            message.textContent = "";
+        });
+
+        // Booking Submission
+        bookingForm.addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            const name = guestName.value.trim();
+            const guestPhone = phone.value.trim();
+            const type = roomType.value;
+            const start = checkIn.value;
+            const end = checkOut.value;
+
+            if (!name || !guestPhone || !type || !start || !end) {
+                showMessage("Please fill in all the required fields.", true);
+                return;
+            }
+
+            if (!roomPrices[type]) {
+                showMessage("Please select a valid service or room type.", true);
+                return;
+            }
+
+            const nights = calculateNights(start, end);
+            if (nights <= 0) {
+                showMessage("Check-out must be after check-in.", true);
+                return;
+            }
+
+            if (!isRoomAvailable(type, start, end)) {
+                showMessage("Sorry, no slots available for " + type + " on those dates.", true);
+                return;
+            }
+
+            const booking = {
+                id: generateBookingId(),
+                guestName: name,
+                phone: guestPhone,
+                roomType: type,
+                checkIn: start,
+                checkOut: end,
+                nights: nights,
+                total: roomPrices[type] * nights,
+                status: "Booked"
+            };
+
+            bookings.push(booking);
+
+            if (!saveBookings()) {
+                bookings.pop();
+                return;
+            }
+
+            displayBookings();
+            updateDashboard();
+
+            bookingForm.reset();
+            roomPreviewBox.style.display = "none";
+            totalPrice.textContent = formatMoney(0);
+            setDateRestrictions();
+
+            showMessage("Booking successful! Booking ID: " + booking.id);
+        });
+
+        // Table Render & Management
+        function displayBookings() {
+            const searchTerm = searchBooking.value.trim().toLowerCase();
+            const filtered = bookings.filter(b => 
+                b.guestName.toLowerCase().includes(searchTerm) ||
+                b.phone.toLowerCase().includes(searchTerm) ||
+                b.id.toLowerCase().includes(searchTerm)
+            );
+
+            bookingTable.innerHTML = "";
+
+            if (filtered.length === 0) {
+                bookingTable.innerHTML = `<tr><td colspan="9">No bookings found.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(booking => {
+                let actions = `
+                    <button class="invoice-button" data-action="invoice" data-id="${escapeHTML(booking.id)}">Print Invoice</button>
+                `;
+
+                if (booking.status === "Booked") {
+                    actions += `
+                        <button class="checkin-button" data-action="checkin" data-id="${escapeHTML(booking.id)}">Check In</button>
+                        <button class="cancel-button" data-action="cancel" data-id="${escapeHTML(booking.id)}">Cancel</button>
+                    `;
+                } else if (booking.status === "Checked-in") {
+                    actions += `
+                        <button class="checkout-button" data-action="checkout" data-id="${escapeHTML(booking.id)}">Check Out</button>
+                    `;
+                }
+
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${escapeHTML(booking.id)}</td>
+                    <td>${escapeHTML(booking.guestName)}</td>
+                    <td>${escapeHTML(booking.phone)}</td>
+                    <td>${escapeHTML(booking.roomType)}</td>
+                    <td>${escapeHTML(booking.checkIn)}</td>
+                    <td>${escapeHTML(booking.checkOut)}</td>
+                    <td>${formatMoney(booking.total)}</td>
+                    <td><span class="status status-${escapeHTML(booking.status)}">${escapeHTML(booking.status)}</span></td>
+                    <td>${actions}</td>
+                `;
+                bookingTable.appendChild(row);
+            });
+        }
+
+        searchBooking.addEventListener("input", displayBookings);
+
+        bookingTable.addEventListener("click", function(e) {
+            const button = e.target.closest("button[data-action]");
+            if (!button) return;
+
+            const bookingId = button.dataset.id;
+            const action = button.dataset.action;
+            const booking = bookings.find(b => b.id === bookingId);
+
+            if (!booking) {
+                showMessage("Booking not found.", true);
+                return;
+            }
+
+            if (action === "invoice") {
+                printInvoice(booking);
+                return;
+            } else if (action === "checkin") {
+                booking.status = "Checked-in";
+                showMessage(booking.guestName + " has checked in successfully.");
+            } else if (action === "checkout") {
+                booking.status = "Checked-out";
+                showMessage(booking.guestName + " has checked out successfully.");
+            } else if (action === "cancel") {
+                if (confirm("Are you sure you want to cancel the booking for " + booking.guestName + "?")) {
+                    booking.status = "Cancelled";
+                    showMessage("Booking cancelled successfully.");
+                } else {
+                    return;
+                }
+            }
+
+            saveBookings();
+            displayBookings();
+            updateDashboard();
+        });
+
+        function updateDashboard() {
+            document.getElementById("totalRooms").textContent = TOTAL_ROOMS;
+
+            const today = new Date();
+            const todayString = [
+                today.getFullYear(),
+                String(today.getMonth() + 1).padStart(2, "0"),
+                String(today.getDate()).padStart(2, "0")
+            ].join("-");
+
+            const occupiedToday = bookings.filter(b => 
+                b.status !== "Cancelled" &&
+                b.status !== "Checked-out" &&
+                b.checkIn <= todayString &&
+                b.checkOut > todayString
+            ).length;
+
+            document.getElementById("availableRooms").textContent = TOTAL_ROOMS - occupiedToday;
+            document.getElementById("activeBookings").textContent = bookings.filter(b => b.status === "Booked" || b.status === "Checked-in").length;
+            document.getElementById("checkedInGuests").textContent = bookings.filter(b => b.status === "Checked-in").length;
+        }
+
+        // Init
+        setDateRestrictions();
+        displayBookings();
+        updateDashboard();
+        updateTotalPrice();
+    </script>
+</body>
+</html>
