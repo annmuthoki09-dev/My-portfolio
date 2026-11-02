@@ -541,4 +541,227 @@
             const end = checkOut.value;
 
             if (!type || !start || !end) {
-                totalPrice.textContent =
+                totalPrice.textContent = formatMoney(0);
+                return;
+            }
+
+            const nights = calculateNights(start, end);
+            if (nights <= 0) {
+                totalPrice.textContent = "Invalid dates";
+                return;
+            }
+
+            totalPrice.textContent = formatMoney(roomPrices[type] * nights);
+        }
+
+        // Handle Image & Price updates on Room Selection
+        roomType.addEventListener("change", () => {
+            const selectedType = roomType.value;
+            if (roomImages[selectedType]) {
+                roomImage.src = roomImages[selectedType];
+                roomPreviewBox.style.display = "block";
+            } else {
+                roomPreviewBox.style.display = "none";
+            }
+            updateTotalPrice();
+        });
+
+        checkIn.addEventListener("change", () => {
+            checkOut.min = checkIn.value;
+            if (checkOut.value && checkOut.value <= checkIn.value) {
+                checkOut.value = "";
+            }
+            updateTotalPrice();
+        });
+
+        checkOut.addEventListener("change", updateTotalPrice);
+
+        function setDateRestrictions() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, "0");
+            const day = String(today.getDate()).padStart(2, "0");
+            const todayString = `${year}-${month}-${day}`;
+
+            checkIn.min = todayString;
+            checkOut.min = checkIn.value || todayString;
+        }
+
+        // Form Reset Event
+        resetBtn.addEventListener("click", () => {
+            roomPreviewBox.style.display = "none";
+            totalPrice.textContent = formatMoney(0);
+            message.textContent = "";
+        });
+
+        // Booking Submission
+        bookingForm.addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            const name = guestName.value.trim();
+            const guestPhone = phone.value.trim();
+            const type = roomType.value;
+            const start = checkIn.value;
+            const end = checkOut.value;
+
+            if (!name || !guestPhone || !type || !start || !end) {
+                showMessage("Please fill in all the required fields.", true);
+                return;
+            }
+
+            if (!roomPrices[type]) {
+                showMessage("Please select a valid room type.", true);
+                return;
+            }
+
+            const nights = calculateNights(start, end);
+            if (nights <= 0) {
+                showMessage("Check-out must be after check-in.", true);
+                return;
+            }
+
+            if (!isRoomAvailable(type, start, end)) {
+                showMessage("Sorry, no " + type + " rooms are available for those dates.", true);
+                return;
+            }
+
+            const booking = {
+                id: generateBookingId(),
+                guestName: name,
+                phone: guestPhone,
+                roomType: type,
+                checkIn: start,
+                checkOut: end,
+                nights: nights,
+                total: roomPrices[type] * nights,
+                status: "Booked"
+            };
+
+            bookings.push(booking);
+
+            if (!saveBookings()) {
+                bookings.pop();
+                return;
+            }
+
+            displayBookings();
+            updateDashboard();
+
+            bookingForm.reset();
+            roomPreviewBox.style.display = "none";
+            totalPrice.textContent = formatMoney(0);
+            setDateRestrictions();
+
+            showMessage("Booking successful! Booking ID: " + booking.id);
+        });
+
+        // Table Render & Management
+        function displayBookings() {
+            const searchTerm = searchBooking.value.trim().toLowerCase();
+            const filtered = bookings.filter(b => 
+                b.guestName.toLowerCase().includes(searchTerm) ||
+                b.phone.toLowerCase().includes(searchTerm) ||
+                b.id.toLowerCase().includes(searchTerm)
+            );
+
+            bookingTable.innerHTML = "";
+
+            if (filtered.length === 0) {
+                bookingTable.innerHTML = `<tr><td colspan="9">No bookings found.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(booking => {
+                let actions = "-";
+                if (booking.status === "Booked") {
+                    actions = `
+                        <button class="checkin-button" data-action="checkin" data-id="${escapeHTML(booking.id)}">Check In</button>
+                        <button class="cancel-button" data-action="cancel" data-id="${escapeHTML(booking.id)}">Cancel</button>
+                    `;
+                } else if (booking.status === "Checked-in") {
+                    actions = `
+                        <button class="checkout-button" data-action="checkout" data-id="${escapeHTML(booking.id)}">Check Out</button>
+                    `;
+                }
+
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${escapeHTML(booking.id)}</td>
+                    <td>${escapeHTML(booking.guestName)}</td>
+                    <td>${escapeHTML(booking.phone)}</td>
+                    <td>${escapeHTML(booking.roomType)}</td>
+                    <td>${escapeHTML(booking.checkIn)}</td>
+                    <td>${escapeHTML(booking.checkOut)}</td>
+                    <td>${formatMoney(booking.total)}</td>
+                    <td><span class="status status-${escapeHTML(booking.status)}">${escapeHTML(booking.status)}</span></td>
+                    <td>${actions}</td>
+                `;
+                bookingTable.appendChild(row);
+            });
+        }
+
+        searchBooking.addEventListener("input", displayBookings);
+
+        bookingTable.addEventListener("click", function(e) {
+            const button = e.target.closest("button[data-action]");
+            if (!button) return;
+
+            const bookingId = button.dataset.id;
+            const action = button.dataset.action;
+            const booking = bookings.find(b => b.id === bookingId);
+
+            if (!booking) {
+                showMessage("Booking not found.", true);
+                return;
+            }
+
+            if (action === "checkin") {
+                booking.status = "Checked-in";
+                showMessage(booking.guestName + " has checked in successfully.");
+            } else if (action === "checkout") {
+                booking.status = "Checked-out";
+                showMessage(booking.guestName + " has checked out successfully.");
+            } else if (action === "cancel") {
+                if (confirm("Are you sure you want to cancel the booking for " + booking.guestName + "?")) {
+                    booking.status = "Cancelled";
+                    showMessage("Booking cancelled successfully.");
+                } else {
+                    return;
+                }
+            }
+
+            saveBookings();
+            displayBookings();
+            updateDashboard();
+        });
+
+        function updateDashboard() {
+            document.getElementById("totalRooms").textContent = TOTAL_ROOMS;
+
+            const today = new Date();
+            const todayString = [
+                today.getFullYear(),
+                String(today.getMonth() + 1).padStart(2, "0"),
+                String(today.getDate()).padStart(2, "0")
+            ].join("-");
+
+            const occupiedToday = bookings.filter(b => 
+                b.status !== "Cancelled" &&
+                b.status !== "Checked-out" &&
+                b.checkIn <= todayString &&
+                b.checkOut > todayString
+            ).length;
+
+            document.getElementById("availableRooms").textContent = TOTAL_ROOMS - occupiedToday;
+            document.getElementById("activeBookings").textContent = bookings.filter(b => b.status === "Booked" || b.status === "Checked-in").length;
+            document.getElementById("checkedInGuests").textContent = bookings.filter(b => b.status === "Checked-in").length;
+        }
+
+        // Init
+        setDateRestrictions();
+        displayBookings();
+        updateDashboard();
+        updateTotalPrice();
+    </script>
+</body>
+</html>
