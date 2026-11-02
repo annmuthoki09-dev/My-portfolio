@@ -3,349 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hotel Management & Activities System</title>
+    <title>Grand Palace Hotel Management System</title>
     <style>
-        /* General page styling */
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: Arial, sans-serif; margin: 0; background-color: #f4f6f9; color: #333; }
 
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background-color: #f4f6f9;
-            color: #333;
-        }
-
-        /* Header */
         header {
             background: linear-gradient(rgba(18, 52, 86, 0.85), rgba(18, 52, 86, 0.85)), 
                         url('https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
-            color: white;
-            text-align: center;
-            padding: 40px 15px;
+            color: white; text-align: center; padding: 40px 15px;
         }
+        header h1 { margin: 0 0 10px; }
+        header p { margin: 0; }
 
-        header h1 {
-            margin: 0 0 10px;
-        }
+        nav { background-color: #0b2239; padding: 15px; text-align: center; }
+        nav a { color: white; text-decoration: none; margin: 0 15px; font-weight: bold; }
+        nav a:hover { color: #f4c542; }
 
-        header p {
-            margin: 0;
-        }
+        main { width: 95%; max-width: 1400px; margin: 25px auto; }
+        section { background-color: white; padding: 25px; margin-bottom: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); }
+        h2 { color: #123456; margin-top: 0; border-bottom: 2px solid #e5e7eb; padding-bottom: 12px; }
 
-        /* Navigation */
-        nav {
-            background-color: #0b2239;
-            padding: 15px;
-            text-align: center;
-        }
+        .dashboard-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+        .card { background-color: #123456; color: white; padding: 20px; border-radius: 8px; text-align: center; }
+        .card h3 { font-size: 16px; margin: 0 0 10px; }
+        .card p { font-size: 28px; font-weight: bold; margin: 0; }
 
-        nav a {
-            color: white;
-            text-decoration: none;
-            margin: 0 15px;
-            font-weight: bold;
-        }
+        form { max-width: 650px; }
+        label { display: block; margin-top: 15px; margin-bottom: 7px; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 15px; }
+        input:focus, select:focus, textarea:focus { outline: 2px solid #2878b5; border-color: transparent; }
 
-        nav a:hover {
-            color: #f4c542;
-        }
+        .room-preview-box { margin-top: 12px; display: none; }
+        .room-preview-box img { width: 100%; height: 260px; object-fit: cover; border-radius: 6px; border: 1px solid #ddd; }
 
-        /* Main content */
-        main {
-            width: 95%;
-            max-width: 1400px;
-            margin: 25px auto;
-        }
+        .price-box { display: flex; justify-content: space-between; gap: 10px; margin: 20px 0; padding: 15px; background-color: #eaf4ff; border-radius: 5px; }
+        #totalPrice { font-weight: bold; color: #123456; }
 
-        section {
-            background-color: white;
-            padding: 25px;
-            margin-bottom: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        }
+        button { background-color: #123456; color: white; border: none; padding: 10px 14px; margin: 3px; border-radius: 5px; cursor: pointer; font-size: 13px; }
+        button:hover { opacity: 0.85; }
+        .secondary-button { background-color: #6c757d; }
+        .checkin-button { background-color: #198754; }
+        .checkout-button { background-color: #0d6efd; }
+        .cancel-button { background-color: #dc3545; }
+        .invoice-button { background-color: #6f42c1; }
+        .export-button { background-color: #198754; font-size: 14px; padding: 10px 18px; margin-bottom: 15px; }
+        .auth-button { background-color: #ff9800; float: right; margin-top: -45px; }
 
-        h2 {
-            color: #123456;
-            margin-top: 0;
-            border-bottom: 2px solid #e5e7eb;
-            padding-bottom: 12px;
-        }
+        #message { font-weight: bold; margin-top: 15px; }
+        #searchBooking { margin-bottom: 20px; max-width: 450px; }
 
-        /* Dashboard cards */
-        .dashboard-cards {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 20px;
-        }
+        .table-container { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 1100px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #123456; color: white; }
+        tbody tr:nth-child(even) { background-color: #f2f6fa; }
+        tbody tr:hover { background-color: #eaf4ff; }
 
-        .card {
-            background-color: #123456;
-            color: white;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-        }
+        .status { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .status-Booked { background-color: #fff3cd; color: #664d03; }
+        .status-Checked-in { background-color: #d1e7dd; color: #0f5132; }
+        .status-Checked-out { background-color: #cfe2ff; color: #084298; }
+        .status-Cancelled { background-color: #f8d7da; color: #842029; }
 
-        .card h3 {
-            font-size: 16px;
-        }
+        .housekeeping-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; margin-top: 20px; }
+        .hk-card { border: 1px solid #ccc; padding: 15px; border-radius: 6px; background: #fafafa; }
+        .hk-card h4 { margin: 0 0 10px; color: #123456; }
 
-        .card p {
-            font-size: 28px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
+        footer { background-color: #0b2239; color: white; text-align: center; padding: 18px; margin-top: 30px; }
 
-        /* Form */
-        form {
-            max-width: 650px;
-        }
-
-        label {
-            display: block;
-            margin-top: 15px;
-            margin-bottom: 7px;
-            font-weight: bold;
-        }
-
-        input,
-        select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 15px;
-        }
-
-        input:focus,
-        select:focus {
-            outline: 2px solid #2878b5;
-            border-color: transparent;
-        }
-
-        /* Preview Image Container */
-        .room-preview-box {
-            margin-top: 12px;
-            display: none;
-        }
-
-        .room-preview-box img {
-            width: 100%;
-            height: 240px;
-            object-fit: cover;
-            border-radius: 6px;
-            border: 1px solid #ddd;
-        }
-
-        /* Price display */
-        .price-box {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            margin: 20px 0;
-            padding: 15px;
-            background-color: #eaf4ff;
-            border-radius: 5px;
-        }
-
-        #totalPrice {
-            font-weight: bold;
-            color: #123456;
-        }
-
-        /* Buttons */
-        button {
-            background-color: #123456;
-            color: white;
-            border: none;
-            padding: 12px 18px;
-            margin: 5px 5px 5px 0;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        button:hover {
-            opacity: 0.85;
-        }
-
-        .secondary-button {
-            background-color: #6c757d;
-        }
-
-        .checkin-button {
-            background-color: #198754;
-        }
-
-        .checkout-button {
-            background-color: #0d6efd;
-        }
-
-        .cancel-button {
-            background-color: #dc3545;
-        }
-
-        .invoice-button {
-            background-color: #6f42c1;
-        }
-
-        /* Messages */
-        #message {
-            font-weight: bold;
-            margin-top: 15px;
-        }
-
-        /* Search */
-        #searchBooking {
-            margin-bottom: 20px;
-            max-width: 450px;
-        }
-
-        /* Booking table */
-        .table-container {
-            width: 100%;
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 1100px;
-        }
-
-        th,
-        td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #123456;
-            color: white;
-        }
-
-        tbody tr:nth-child(even) {
-            background-color: #f2f6fa;
-        }
-
-        tbody tr:hover {
-            background-color: #eaf4ff;
-        }
-
-        td button {
-            margin: 3px;
-            white-space: nowrap;
-        }
-
-        /* Status labels */
-        .status {
-            display: inline-block;
-            padding: 5px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .status-Booked {
-            background-color: #fff3cd;
-            color: #664d03;
-        }
-
-        .status-Checked-in {
-            background-color: #d1e7dd;
-            color: #0f5132;
-        }
-
-        .status-Checked-out {
-            background-color: #cfe2ff;
-            color: #084298;
-        }
-
-        .status-Cancelled {
-            background-color: #f8d7da;
-            color: #842029;
-        }
-
-        /* Footer */
-        footer {
-            background-color: #0b2239;
-            color: white;
-            text-align: center;
-            padding: 18px;
-            margin-top: 30px;
-        }
-
-        /* Responsive layout */
         @media (max-width: 800px) {
-            .dashboard-cards {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-
-            nav a {
-                display: inline-block;
-                margin: 7px;
-            }
-
-            section {
-                padding: 15px;
-            }
+            .dashboard-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            nav a { display: inline-block; margin: 7px; }
+            section { padding: 15px; }
+            .auth-button { float: none; margin-top: 10px; display: block; width: 100%; }
         }
-
         @media (max-width: 450px) {
-            .dashboard-cards {
-                grid-template-columns: 1fr;
-            }
-
-            header h1 {
-                font-size: 24px;
-            }
+            .dashboard-cards { grid-template-columns: 1fr; }
+            header h1 { font-size: 24px; }
         }
     </style>
 </head>
-
 <body>
 
     <header>
         <h1>🏨 Grand Palace Hotel & Resort</h1>
-        <p>Rooms, Dining, Drinks & Recreational Activities</p>
+        <p>Rooms, Dining, Drinks, Recreation & Event Services</p>
     </header>
 
     <nav>
         <a href="#dashboard">Dashboard</a>
         <a href="#booking">New Reservation</a>
         <a href="#bookings">Manage Bookings</a>
+        <a href="#housekeeping">Housekeeping</a>
     </nav>
 
     <main>
 
-        <!-- Dashboard -->
+        <!-- Dashboard Section -->
         <section id="dashboard">
             <h2>Dashboard</h2>
+            <button id="authToggleBtn" class="auth-button">🔒 Staff Login</button>
 
             <div class="dashboard-cards">
                 <div class="card">
-                    <h3>Total Slots/Units</h3>
+                    <h3>Total Units/Slots</h3>
                     <p id="totalRooms">22</p>
                 </div>
-
                 <div class="card">
-                    <h3>Available Slots</h3>
+                    <h3>Available Units</h3>
                     <p id="availableRooms">22</p>
                 </div>
-
                 <div class="card">
                     <h3>Active Bookings</h3>
                     <p id="activeBookings">0</p>
                 </div>
-
                 <div class="card">
                     <h3>Checked-in Guests</h3>
                     <p id="checkedInGuests">0</p>
@@ -353,7 +126,7 @@
             </div>
         </section>
 
-        <!-- Booking Form -->
+        <!-- Booking Form Section -->
         <section id="booking">
             <h2>Register Guest / Book Service</h2>
 
@@ -364,9 +137,9 @@
                 <label for="phone">Phone Number:</label>
                 <input type="tel" id="phone" placeholder="Enter phone number" required>
 
-                <label for="roomType">Select Room, Activity or Package:</label>
+                <label for="roomType">Select Room, Activity or Service Package:</label>
                 <select id="roomType" required>
-                    <option value="">Select Service / Room Type</option>
+                    <option value="">Select Service / Facility</option>
                     <option value="Single">Single Room - KSh 2,000</option>
                     <option value="Double">Double Room - KSh 3,500</option>
                     <option value="Deluxe">Deluxe Room - KSh 5,000</option>
@@ -375,9 +148,11 @@
                     <option value="BoatRiding">Boat Riding Experience - KSh 2,500</option>
                     <option value="Food">Romantic Candlelight Dining - KSh 1,800</option>
                     <option value="Drinks">Beverages & Bar Package - KSh 1,200</option>
+                    <option value="Spa">Spa & Wellness Package - KSh 4,000</option>
+                    <option value="Conference">Conference & Event Hall - KSh 15,000</option>
                 </select>
 
-                <!-- Image Preview Box -->
+                <!-- Dynamic Image Preview Container -->
                 <div id="roomPreviewBox" class="room-preview-box">
                     <img id="roomImage" src="" alt="Service Preview">
                 </div>
@@ -388,23 +163,27 @@
                 <label for="checkOut">End Date:</label>
                 <input type="date" id="checkOut" required>
 
+                <label for="specialRequests">Special Requests / Dietary Notes:</label>
+                <textarea id="specialRequests" rows="2" placeholder="Optional notes (e.g. extra bed, vegetarian meal...)"></textarea>
+
                 <div class="price-box">
                     <strong>Estimated Total:</strong>
                     <span id="totalPrice">KSh 0</span>
                 </div>
 
-                <button type="submit">Confirm Booking</button>
+                <button type="submit">Confirm Reservation</button>
                 <button type="reset" class="secondary-button" id="resetBtn">Clear Form</button>
             </form>
 
             <p id="message" role="status"></p>
         </section>
 
-        <!-- Booking Records -->
+        <!-- Booking Records Table Section -->
         <section id="bookings">
             <h2>All Guest Bookings</h2>
 
-            <input type="search" id="searchBooking" placeholder="Search by guest name or phone..." aria-label="Search bookings">
+            <button id="exportCsvBtn" class="export-button">📥 Export Bookings to CSV</button>
+            <input type="search" id="searchBooking" placeholder="Search by guest name, phone, or ID..." aria-label="Search bookings">
 
             <div class="table-container">
                 <table>
@@ -413,7 +192,7 @@
                             <th>Booking ID</th>
                             <th>Guest Name</th>
                             <th>Phone</th>
-                            <th>Service / Room</th>
+                            <th>Service / Facility</th>
                             <th>Check-in</th>
                             <th>Check-out</th>
                             <th>Total (KSh)</th>
@@ -422,20 +201,28 @@
                         </tr>
                     </thead>
                     <tbody id="bookingTable">
-                        <!-- JavaScript inserts bookings here -->
+                        <!-- Bookings rendered via JS -->
                     </tbody>
                 </table>
+            </div>
+        </section>
+
+        <!-- Housekeeping Room Tracker Section -->
+        <section id="housekeeping">
+            <h2>Housekeeping & Facility Status Tracker</h2>
+            <div id="housekeepingGrid" class="housekeeping-grid">
+                <!-- Facility status cards rendered via JS -->
             </div>
         </section>
 
     </main>
 
     <footer>
-        <p>&copy; 2026 Grand Palace Hotel | Management System</p>
+        <p>&copy; 2026 Grand Palace Hotel & Resort | Management System</p>
     </footer>
 
     <script>
-        // Pricing per night/session in Kenyan Shillings
+        // Category Prices in KSh
         const roomPrices = {
             Single: 2000,
             Double: 3500,
@@ -444,10 +231,12 @@
             SwimmingPool: 1500,
             BoatRiding: 2500,
             Food: 1800,
-            Drinks: 1200
+            Drinks: 1200,
+            Spa: 4000,
+            Conference: 15000
         };
 
-        // Preview images (Direct web URLs for all services)
+        // Service Preview Images
         const roomImages = {
             Single: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=600&q=80",
             Double: "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=600&q=80",
@@ -456,10 +245,12 @@
             SwimmingPool: "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=600&q=80",
             BoatRiding: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=600&q=80",
             Food: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80",
-            Drinks: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=600&q=80"
+            Drinks: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=600&q=80",
+            Spa: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=600&q=80",
+            Conference: "https://images.unsplash.com/photo-1517502884422-41eaead166d4?auto=format&fit=crop&w=600&q=80"
         };
 
-        // Capacity configuration for each category
+        // Facility Slots / Capacity Configuration
         const roomCapacity = {
             Single: 3,
             Double: 3,
@@ -468,10 +259,16 @@
             SwimmingPool: 4,
             BoatRiding: 4,
             Food: 20,
-            Drinks: 20
+            Drinks: 20,
+            Spa: 2,
+            Conference: 1
         };
 
         const TOTAL_ROOMS = Object.values(roomCapacity).reduce((sum, count) => sum + count, 0);
+
+        // Security Staff PIN
+        const STAFF_PIN = "1234";
+        let isStaffAuthenticated = false;
 
         // DOM elements
         const bookingForm = document.getElementById("bookingForm");
@@ -482,31 +279,48 @@
         const roomImage = document.getElementById("roomImage");
         const checkIn = document.getElementById("checkIn");
         const checkOut = document.getElementById("checkOut");
+        const specialRequests = document.getElementById("specialRequests");
         const totalPrice = document.getElementById("totalPrice");
         const bookingTable = document.getElementById("bookingTable");
         const searchBooking = document.getElementById("searchBooking");
         const message = document.getElementById("message");
         const resetBtn = document.getElementById("resetBtn");
+        const authToggleBtn = document.getElementById("authToggleBtn");
+        const exportCsvBtn = document.getElementById("exportCsvBtn");
+        const housekeepingGrid = document.getElementById("housekeepingGrid");
 
         let bookings = [];
+        let housekeepingStatus = {};
 
+        // Load storage
         try {
             const savedBookings = localStorage.getItem("hotelBookings");
             if (savedBookings) {
                 const parsed = JSON.parse(savedBookings);
                 if (Array.isArray(parsed)) bookings = parsed;
             }
+
+            const savedHK = localStorage.getItem("hotelHousekeeping");
+            if (savedHK) {
+                housekeepingStatus = JSON.parse(savedHK);
+            } else {
+                Object.keys(roomCapacity).forEach(type => {
+                    for (let i = 1; i <= roomCapacity[type]; i++) {
+                        housekeepingStatus[`${type}-${i}`] = "Clean";
+                    }
+                });
+            }
         } catch (error) {
-            console.error("Could not load saved bookings:", error);
+            console.error("Storage load error:", error);
         }
 
-        // Helper Functions
+        // Helper functions
         function formatMoney(amount) {
             return "KSh " + Number(amount).toLocaleString("en-KE");
         }
 
         function escapeHTML(value) {
-            return String(value).replace(/[&<>"']/g, char => ({
+            return String(value || '').replace(/[&<>"']/g, char => ({
                 "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
             })[char]);
         }
@@ -514,9 +328,10 @@
         function saveBookings() {
             try {
                 localStorage.setItem("hotelBookings", JSON.stringify(bookings));
+                localStorage.setItem("hotelHousekeeping", JSON.stringify(housekeepingStatus));
                 return true;
             } catch (error) {
-                showMessage("Unable to save data. Check your browser storage.", true);
+                showMessage("Unable to save data. Check browser storage settings.", true);
                 return false;
             }
         }
@@ -603,13 +418,14 @@
                         <p><strong>Booking ID:</strong> ${escapeHTML(booking.id)}</p>
                         <p><strong>Guest Name:</strong> ${escapeHTML(booking.guestName)}</p>
                         <p><strong>Phone Number:</strong> ${escapeHTML(booking.phone)}</p>
-                        <p><strong>Booking Status:</strong> ${escapeHTML(booking.status)}</p>
+                        <p><strong>Status:</strong> ${escapeHTML(booking.status)}</p>
+                        <p><strong>Special Requests:</strong> ${escapeHTML(booking.specialRequests || 'None')}</p>
                         <table>
                             <tr>
-                                <th>Service / Room Type</th>
-                                <th>Check-in Date</th>
-                                <th>Check-out Date</th>
-                                <th>Nights / Sessions</th>
+                                <th>Service / Facility</th>
+                                <th>Start / Check-in</th>
+                                <th>End / Check-out</th>
+                                <th>Nights / Days</th>
                                 <th>Total (KSh)</th>
                             </tr>
                             <tr>
@@ -625,7 +441,7 @@
                         Grand Total: ${formatMoney(booking.total)}
                     </div>
                     <div class="footer">
-                        <p>Thank you for choosing Grand Palace Hotel & Resort! For inquiries, call front desk.</p>
+                        <p>Thank you for choosing Grand Palace Hotel & Resort!</p>
                     </div>
                     <script>
                         window.onload = function() { window.print(); }
@@ -636,7 +452,64 @@
             invoiceWindow.document.close();
         }
 
-        // Handle Image & Price updates on Selection Change
+        // CSV Export Function
+        exportCsvBtn.addEventListener("click", () => {
+            if (bookings.length === 0) {
+                alert("No bookings available to export.");
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Booking ID,Guest Name,Phone,Service Type,Check In,Check Out,Nights,Total (KSh),Status,Notes\n";
+
+            bookings.forEach(b => {
+                const row = [
+                    `"${b.id}"`,
+                    `"${b.guestName}"`,
+                    `"${b.phone}"`,
+                    `"${b.roomType}"`,
+                    `"${b.checkIn}"`,
+                    `"${b.checkOut}"`,
+                    `"${b.nights}"`,
+                    `"${b.total}"`,
+                    `"${b.status}"`,
+                    `"${(b.specialRequests || '').replace(/"/g, '""')}"`
+                ].join(",");
+                csvContent += row + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Grand_Palace_Bookings_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
+        // Staff PIN Toggle
+        authToggleBtn.addEventListener("click", () => {
+            if (isStaffAuthenticated) {
+                isStaffAuthenticated = false;
+                authToggleBtn.textContent = "🔒 Staff Login";
+                authToggleBtn.style.backgroundColor = "#ff9800";
+                showMessage("Logged out of Staff Mode.");
+            } else {
+                const pin = prompt("Enter 4-digit Staff PIN:");
+                if (pin === STAFF_PIN) {
+                    isStaffAuthenticated = true;
+                    authToggleBtn.textContent = "🔓 Staff Unlocked";
+                    authToggleBtn.style.backgroundColor = "#198754";
+                    showMessage("Staff Mode Unlocked.");
+                } else if (pin !== null) {
+                    alert("Incorrect PIN.");
+                }
+            }
+            displayBookings();
+            renderHousekeeping();
+        });
+
+        // Event Handlers
         roomType.addEventListener("change", () => {
             const selectedType = roomType.value;
             if (roomImages[selectedType]) {
@@ -669,14 +542,12 @@
             checkOut.min = checkIn.value || todayString;
         }
 
-        // Form Reset Event
         resetBtn.addEventListener("click", () => {
             roomPreviewBox.style.display = "none";
             totalPrice.textContent = formatMoney(0);
             message.textContent = "";
         });
 
-        // Booking Submission
         bookingForm.addEventListener("submit", function(e) {
             e.preventDefault();
 
@@ -685,25 +556,21 @@
             const type = roomType.value;
             const start = checkIn.value;
             const end = checkOut.value;
+            const notes = specialRequests.value.trim();
 
             if (!name || !guestPhone || !type || !start || !end) {
-                showMessage("Please fill in all the required fields.", true);
-                return;
-            }
-
-            if (!roomPrices[type]) {
-                showMessage("Please select a valid service or room type.", true);
+                showMessage("Please fill in all required fields.", true);
                 return;
             }
 
             const nights = calculateNights(start, end);
             if (nights <= 0) {
-                showMessage("Check-out must be after check-in.", true);
+                showMessage("Check-out date must be after check-in date.", true);
                 return;
             }
 
             if (!isRoomAvailable(type, start, end)) {
-                showMessage("Sorry, no slots available for " + type + " on those dates.", true);
+                showMessage("Sorry, no slots are available for " + type + " on those dates.", true);
                 return;
             }
 
@@ -715,6 +582,7 @@
                 checkIn: start,
                 checkOut: end,
                 nights: nights,
+                specialRequests: notes,
                 total: roomPrices[type] * nights,
                 status: "Booked"
             };
@@ -737,7 +605,6 @@
             showMessage("Booking successful! Booking ID: " + booking.id);
         });
 
-        // Table Render & Management
         function displayBookings() {
             const searchTerm = searchBooking.value.trim().toLowerCase();
             const filtered = bookings.filter(b => 
@@ -755,18 +622,22 @@
 
             filtered.forEach(booking => {
                 let actions = `
-                    <button class="invoice-button" data-action="invoice" data-id="${escapeHTML(booking.id)}">Print Invoice</button>
+                    <button class="invoice-button" data-action="invoice" data-id="${escapeHTML(booking.id)}">Invoice</button>
                 `;
 
-                if (booking.status === "Booked") {
-                    actions += `
-                        <button class="checkin-button" data-action="checkin" data-id="${escapeHTML(booking.id)}">Check In</button>
-                        <button class="cancel-button" data-action="cancel" data-id="${escapeHTML(booking.id)}">Cancel</button>
-                    `;
-                } else if (booking.status === "Checked-in") {
-                    actions += `
-                        <button class="checkout-button" data-action="checkout" data-id="${escapeHTML(booking.id)}">Check Out</button>
-                    `;
+                if (isStaffAuthenticated) {
+                    if (booking.status === "Booked") {
+                        actions += `
+                            <button class="checkin-button" data-action="checkin" data-id="${escapeHTML(booking.id)}">Check In</button>
+                            <button class="cancel-button" data-action="cancel" data-id="${escapeHTML(booking.id)}">Cancel</button>
+                        `;
+                    } else if (booking.status === "Checked-in") {
+                        actions += `
+                            <button class="checkout-button" data-action="checkout" data-id="${escapeHTML(booking.id)}">Check Out</button>
+                        `;
+                    }
+                } else {
+                    actions += `<span style="font-size:11px; color:#888;"> (Unlock Staff PIN to manage)</span>`;
                 }
 
                 const row = document.createElement("tr");
@@ -795,24 +666,28 @@
             const action = button.dataset.action;
             const booking = bookings.find(b => b.id === bookingId);
 
-            if (!booking) {
-                showMessage("Booking not found.", true);
-                return;
-            }
+            if (!booking) return;
 
             if (action === "invoice") {
                 printInvoice(booking);
                 return;
-            } else if (action === "checkin") {
+            }
+
+            if (!isStaffAuthenticated) {
+                alert("Please unlock Staff Mode first to perform check-ins or cancellations.");
+                return;
+            }
+
+            if (action === "checkin") {
                 booking.status = "Checked-in";
-                showMessage(booking.guestName + " has checked in successfully.");
+                showMessage(booking.guestName + " checked in successfully.");
             } else if (action === "checkout") {
                 booking.status = "Checked-out";
-                showMessage(booking.guestName + " has checked out successfully.");
+                showMessage(booking.guestName + " checked out successfully.");
             } else if (action === "cancel") {
-                if (confirm("Are you sure you want to cancel the booking for " + booking.guestName + "?")) {
+                if (confirm("Cancel booking for " + booking.guestName + "?")) {
                     booking.status = "Cancelled";
-                    showMessage("Booking cancelled successfully.");
+                    showMessage("Booking cancelled.");
                 } else {
                     return;
                 }
@@ -822,6 +697,32 @@
             displayBookings();
             updateDashboard();
         });
+
+        function renderHousekeeping() {
+            housekeepingGrid.innerHTML = "";
+            Object.keys(housekeepingStatus).forEach(slotKey => {
+                const currentStatus = housekeepingStatus[slotKey];
+                const card = document.createElement("div");
+                card.className = "hk-card";
+                card.innerHTML = `
+                    <h4>${escapeHTML(slotKey)}</h4>
+                    <p>Status: <strong>${escapeHTML(currentStatus)}</strong></p>
+                    ${isStaffAuthenticated ? `
+                        <button onclick="toggleHousekeeping('${slotKey}', 'Clean')">Clean</button>
+                        <button onclick="toggleHousekeeping('${slotKey}', 'Dirty')">Dirty</button>
+                        <button onclick="toggleHousekeeping('${slotKey}', 'Maintenance')">Maintenance</button>
+                    ` : '<span style="font-size:11px; color:#888;">Unlock Staff PIN to change status</span>'}
+                `;
+                housekeepingGrid.appendChild(card);
+            });
+        }
+
+        window.toggleHousekeeping = function(slotKey, status) {
+            if (!isStaffAuthenticated) return;
+            housekeepingStatus[slotKey] = status;
+            saveBookings();
+            renderHousekeeping();
+        };
 
         function updateDashboard() {
             document.getElementById("totalRooms").textContent = TOTAL_ROOMS;
@@ -845,9 +746,10 @@
             document.getElementById("checkedInGuests").textContent = bookings.filter(b => b.status === "Checked-in").length;
         }
 
-        // Init
+        // Initialize App
         setDateRestrictions();
         displayBookings();
+        renderHousekeeping();
         updateDashboard();
         updateTotalPrice();
     </script>
