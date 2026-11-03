@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grand Palace Hotel Management System - Enterprise Pro</title>
+    <title>Grand Palace Hotel Management System - Enterprise Elite Edition</title>
     <style>
         * { box-sizing: border-box; }
         html { scroll-behavior: smooth; }
@@ -49,7 +49,10 @@
         .cancel-button { background-color: #dc3545; }
         .invoice-button { background-color: #6f42c1; }
         .export-button { background-color: #198754; font-size: 14px; padding: 10px 18px; margin-bottom: 15px; }
-        .auth-bar { float: right; margin-top: -48px; background: #fff; padding: 5px 12px; border-radius: 6px; border: 1px solid #ccc; font-size: 13px; }
+        
+        .top-bar-controls { display: flex; justify-content: flex-end; align-items: center; gap: 15px; margin-bottom: -35px; position: relative; z-index: 1010; }
+        .currency-selector { padding: 5px 10px; border-radius: 5px; font-size: 13px; border: 1px solid #ccc; background: white; font-weight: bold; }
+        .auth-bar { background: #fff; padding: 5px 12px; border-radius: 6px; border: 1px solid #ccc; font-size: 13px; }
 
         #searchBooking { margin-bottom: 20px; max-width: 450px; }
 
@@ -75,9 +78,8 @@
         .review-card .rating { color: #f4c542; margin-bottom: 8px; font-size: 14px; }
         .review-card p { margin: 0; font-size: 13px; color: #555; }
 
-        /* Modal Overlay */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 25px; border-radius: 8px; width: 90%; max-width: 550px; max-height: 90vh; overflow-y: auto; position: relative; }
+        .modal-content { background: white; padding: 25px; border-radius: 8px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; position: relative; }
 
         #toastContainer { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
         .toast { background: #0b2239; color: white; padding: 12px 18px; border-radius: 6px; font-size: 13px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); animation: fadeIn 0.3s; }
@@ -85,7 +87,7 @@
         footer { background-color: #0b2239; color: white; text-align: center; padding: 18px; margin-top: 30px; }
 
         @media (max-width: 900px) {
-            .auth-bar { float: none; margin-bottom: 15px; display: inline-block; }
+            .top-bar-controls { flex-direction: column; align-items: flex-end; margin-bottom: 0; }
         }
     </style>
 </head>
@@ -93,7 +95,7 @@
 
     <header>
         <h1>🏨 Grand Palace Hotel & Resort</h1>
-        <p>Enterprise Management System - Pro Edition with Maintenance, Swaps & Task Governance</p>
+        <p>Enterprise Management System - Elite Edition with Multi-Currency, Loyalty & Audit Logs</p>
     </header>
 
     <nav>
@@ -102,8 +104,10 @@
         <a href="#booking">Reservation</a>
         <a href="#bookings">Manage Bookings</a>
         <a href="#pos">Restaurant POS</a>
-        <a href="#maintenance">Maintenance Desk</a>
+        <a href="#loyalty">Loyalty Club</a>
+        <a href="#maintenance">Maintenance</a>
         <a href="#tasks">Housekeeping Tasks</a>
+        <a href="#audit">Audit Logs</a>
         <a href="#analytics">Analytics</a>
         <a href="#reviews">Reviews</a>
     </nav>
@@ -112,12 +116,23 @@
 
         <!-- Dashboard Section -->
         <section id="dashboard">
-            <h2>Dashboard</h2>
-            <div class="auth-bar">
-                <span>Role: <strong id="currentRoleDisplay">Guest / Public</strong></span>
-                <button id="authBtn" class="secondary-button" style="padding: 4px 10px; margin-left: 8px;">Staff Login</button>
+            <div class="top-bar-controls">
+                <div>
+                    <label for="globalCurrency" style="display:inline; font-size:12px; margin-right:5px;">Currency:</label>
+                    <select id="globalCurrency" class="currency-selector">
+                        <option value="KES">KSh (KES)</option>
+                        <option value="USD">USD ($)</option>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="GBP">GBP (£)</option>
+                    </select>
+                </div>
+                <div class="auth-bar">
+                    <span>Role: <strong id="currentRoleDisplay">Guest / Public</strong></span>
+                    <button id="authBtn" class="secondary-button" style="padding: 4px 10px; margin-left: 8px;">Staff Login</button>
+                </div>
             </div>
 
+            <h2>Dashboard</h2>
             <div class="dashboard-cards" style="margin-top: 15px;">
                 <div class="card">
                     <h3>Total Units</h3>
@@ -141,7 +156,7 @@
         <!-- Visual Floor Plan Section -->
         <section id="floorplan">
             <h2>Visual Floor Map & Unit Status</h2>
-            <p style="font-size: 13px; color: #666;">Inspect unit status or toggle cleanliness flags (Restricted to Authorized Staff).</p>
+            <p style="font-size: 13px; color: #666;">Inspect unit status or toggle cleanliness flags.</p>
             <div id="floorGrid" class="floor-grid"></div>
         </section>
 
@@ -152,22 +167,22 @@
                 <label for="guestName">Guest Full Name:</label>
                 <input type="text" id="guestName" placeholder="Enter guest name" required>
 
-                <label for="phone">Phone Number:</label>
-                <input type="tel" id="phone" placeholder="Enter phone number" required>
+                <label for="phone">Phone Number / Email:</label>
+                <input type="text" id="phone" placeholder="Enter phone number or email" required>
 
                 <label for="roomType">Select Room, Activity or Service Package:</label>
                 <select id="roomType" required>
                     <option value="">Select Service / Facility</option>
-                    <option value="Single">Single Room - KSh 2,000 / night</option>
-                    <option value="Double">Double Room - KSh 3,500 / night</option>
-                    <option value="Deluxe">Deluxe Room - KSh 5,000 / night</option>
-                    <option value="Suite">Suite - KSh 8,000 / night</option>
-                    <option value="SwimmingPool">Swimming Pool Pass - KSh 1,500</option>
-                    <option value="BoatRiding">Boat Riding Experience - KSh 2,500</option>
-                    <option value="Food">Romantic Candlelight Dining - KSh 1,800</option>
-                    <option value="Drinks">Beverages & Bar Package - KSh 1,200</option>
-                    <option value="Spa">Spa & Wellness Package - KSh 4,000</option>
-                    <option value="Conference">Conference & Event Hall - KSh 15,000</option>
+                    <option value="Single">Single Room - 2,000 / night</option>
+                    <option value="Double">Double Room - 3,500 / night</option>
+                    <option value="Deluxe">Deluxe Room - 5,000 / night</option>
+                    <option value="Suite">Suite - 8,000 / night</option>
+                    <option value="SwimmingPool">Swimming Pool Pass - 1,500</option>
+                    <option value="BoatRiding">Boat Riding Experience - 2,500</option>
+                    <option value="Food">Romantic Candlelight Dining - 1,800</option>
+                    <option value="Drinks">Beverages & Bar Package - 1,200</option>
+                    <option value="Spa">Spa & Wellness Package - 4,000</option>
+                    <option value="Conference">Conference & Event Hall - 15,000</option>
                 </select>
 
                 <div id="roomPreviewBox" class="room-preview-box">
@@ -202,10 +217,10 @@
 
                 <div class="price-box">
                     <div>
-                        <strong>Estimated Total:</strong> <span id="totalPrice">KSh 0</span>
+                        <strong>Estimated Total:</strong> <span id="totalPrice">0</span>
                     </div>
                     <div>
-                        <strong>Due Now:</strong> <span id="dueNowPrice">KSh 0</span>
+                        <strong>Due Now:</strong> <span id="dueNowPrice">0</span>
                     </div>
                 </div>
 
@@ -226,7 +241,7 @@
                         <tr>
                             <th>ID</th>
                             <th>Guest Name</th>
-                            <th>Phone</th>
+                            <th>Contact</th>
                             <th>Service</th>
                             <th>Dates</th>
                             <th>Payment</th>
@@ -243,17 +258,17 @@
         <!-- Restaurant POS & Ancillary Charges -->
         <section id="pos">
             <h2>Restaurant & Ancillary POS Billing</h2>
-            <p style="font-size: 13px; color: #666;">Charge extra items (meals, drinks, spa) directly to an active checked-in guest's bill tab.</p>
+            <p style="font-size: 13px; color: #666;">Charge extra items directly to an active checked-in guest's bill tab.</p>
             <form id="posForm" style="max-width: 600px;">
                 <label for="posBookingSelect">Select Active Checked-In Guest:</label>
                 <select id="posBookingSelect" required></select>
 
                 <label for="posItem">Ancillary Item / Service:</label>
                 <select id="posItem" required>
-                    <option value="Tilapia Special - KSh 1,200">Tilapia & Fries Meal - KSh 1,200</option>
-                    <option value="Cocktail Pitcher - KSh 1,500">Cocktail Pitcher - KSh 1,500</option>
-                    <option value="Full Body Massage - KSh 3,000">Full Body Massage - KSh 3,000</option>
-                    <option value="Boat Tour Extra - KSh 1,000">Additional Boat Tour Pass - KSh 1,000</option>
+                    <option value="Tilapia Special - 1,200">Tilapia & Fries Meal - 1,200</option>
+                    <option value="Cocktail Pitcher - 1,500">Cocktail Pitcher - 1,500</option>
+                    <option value="Full Body Massage - 3,000">Full Body Massage - 3,000</option>
+                    <option value="Boat Tour Extra - 1,000">Additional Boat Tour Pass - 1,000</option>
                 </select>
 
                 <label for="posQty">Quantity:</label>
@@ -261,6 +276,27 @@
 
                 <button type="submit" style="margin-top: 15px;" class="checkin-button">Post Charge to Guest Tab</button>
             </form>
+        </section>
+
+        <!-- Loyalty & Membership Club -->
+        <section id="loyalty">
+            <h2>Guest Loyalty & Rewards Club</h2>
+            <p style="font-size: 13px; color: #666;">Track guest loyalty points earned from stays and bookings (Tier status: Bronze, Silver, Gold).</p>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Guest Name</th>
+                            <th>Contact</th>
+                            <th>Total Spent</th>
+                            <th>Loyalty Points</th>
+                            <th>Tier Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="loyaltyTable"></tbody>
+                </table>
+            </div>
         </section>
 
         <!-- Maintenance & Ticketing Desk -->
@@ -340,21 +376,41 @@
             </div>
         </section>
 
+        <!-- Staff Shift & Audit Logs -->
+        <section id="audit">
+            <h2>Staff Activity Audit Trail</h2>
+            <p style="font-size: 13px; color: #666;">Record of sensitive administrative and front desk actions for security oversight.</p>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Staff Role / User</th>
+                            <th>Action Performed</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody id="auditTable"></tbody>
+                </table>
+            </div>
+        </section>
+
         <!-- Financial Analytics & Reports -->
         <section id="analytics">
             <h2>Financial & Revenue Analytics</h2>
             <div class="dashboard-cards">
                 <div class="card" style="background: #0d6efd;">
                     <h3>Gross Revenue</h3>
-                    <p id="statGrossRev">KSh 0</p>
+                    <p id="statGrossRev">0</p>
                 </div>
                 <div class="card" style="background: #198754;">
                     <h3>M-Pesa Collections</h3>
-                    <p id="statMpesa">KSh 0</p>
+                    <p id="statMpesa">0</p>
                 </div>
                 <div class="card" style="background: #6f42c1;">
                     <h3>Cash Collections</h3>
-                    <p id="statCash">KSh 0</p>
+                    <p id="statCash">0</p>
                 </div>
                 <div class="card" style="background: #fd7e14;">
                     <h3>Occupancy Rate</h3>
@@ -405,10 +461,30 @@
     <div id="toastContainer"></div>
 
     <footer>
-        <p>&copy; 2026 Grand Palace Hotel & Resort | Enterprise Pro Edition</p>
+        <p>&copy; 2026 Grand Palace Hotel & Resort | Enterprise Elite Edition</p>
     </footer>
 
     <script>
+        // Currency Rates (Base currency KES)
+        const exchangeRates = { KES: 1, USD: 0.0077, EUR: 0.0073, GBP: 0.0062 };
+        const currencySymbols = { KES: "KSh ", USD: "$", EUR: "€", GBP: "£" };
+        let currentCurrency = "KES";
+
+        document.getElementById("globalCurrency").addEventListener("change", (e) => {
+            currentCurrency = e.target.value;
+            renderAll();
+        });
+
+        function formatMoney(amtInKES) {
+            const rate = exchangeRates[currentCurrency];
+            const converted = Number(amtInKES) * rate;
+            const symbol = currencySymbols[currentCurrency];
+            if (currentCurrency === "KES") {
+                return symbol + Math.round(converted).toLocaleString("en-KE");
+            }
+            return symbol + converted.toFixed(2);
+        }
+
         const roomPrices = {
             Single: 2000, Double: 3500, Deluxe: 5000, Suite: 8000,
             SwimmingPool: 1500, BoatRiding: 2500, Food: 1800, Drinks: 1200, Spa: 4000, Conference: 15000
@@ -430,7 +506,6 @@
         const roomCapacity = { Single: 3, Double: 3, Deluxe: 2, Suite: 2, SwimmingPool: 4, BoatRiding: 4, Food: 20, Drinks: 20, Spa: 2, Conference: 1 };
         const TOTAL_UNITS = Object.values(roomCapacity).reduce((a, b) => a + b, 0);
 
-        // RBAC Roles & PINs
         const ROLES = {
             MANAGER: { pin: "1234", name: "General Manager" },
             RECEPTIONIST: { pin: "1111", name: "Front Desk Receptionist" },
@@ -444,6 +519,7 @@
         let reviews = JSON.parse(localStorage.getItem("hotelReviews") || "[]");
         let maintenanceTickets = JSON.parse(localStorage.getItem("hotelMaintenance") || "[]");
         let housekeepingTasks = JSON.parse(localStorage.getItem("hotelTasks") || "[]");
+        let auditLogs = JSON.parse(localStorage.getItem("hotelAudit") || "[]");
 
         if (Object.keys(housekeepingStatus).length === 0) {
             Object.keys(roomCapacity).forEach(type => {
@@ -460,7 +536,16 @@
             setTimeout(() => toast.remove(), 4000);
         }
 
-        function formatMoney(amt) { return "KSh " + Number(amt).toLocaleString("en-KE"); }
+        function logAudit(action, details) {
+            auditLogs.unshift({
+                timestamp: new Date().toLocaleString(),
+                role: currentUserRole ? currentUserRole.name : "Guest / Public User",
+                action,
+                details
+            });
+            saveData();
+        }
+
         function escapeHTML(str) { return String(str || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
         function saveData() {
@@ -470,6 +555,7 @@
             localStorage.setItem("hotelReviews", JSON.stringify(reviews));
             localStorage.setItem("hotelMaintenance", JSON.stringify(maintenanceTickets));
             localStorage.setItem("hotelTasks", JSON.stringify(housekeepingTasks));
+            localStorage.setItem("hotelAudit", JSON.stringify(auditLogs));
         }
 
         function openModal(title, htmlContent) {
@@ -484,6 +570,7 @@
         // Auth Handler
         document.getElementById("authBtn").addEventListener("click", () => {
             if (currentUserRole) {
+                logAudit("Staff Logout", `Logged out from ${currentUserRole.name}`);
                 currentUserRole = null;
                 document.getElementById("currentRoleDisplay").textContent = "Guest / Public";
                 document.getElementById("authBtn").textContent = "Staff Login";
@@ -498,6 +585,7 @@
                 if (currentUserRole) {
                     document.getElementById("currentRoleDisplay").textContent = currentUserRole.name;
                     document.getElementById("authBtn").textContent = "Logout";
+                    logAudit("Staff Login", `Successfully authenticated as ${currentUserRole.name}`);
                     showToast("Logged in as " + currentUserRole.name);
                 }
             }
@@ -581,6 +669,7 @@
             };
 
             bookings.push(booking);
+            logAudit("New Reservation", `Created booking ${booking.id} for ${name} (${type})`);
             saveData();
             renderAll();
             document.getElementById("bookingForm").reset();
@@ -588,14 +677,15 @@
             document.getElementById("mpesaBox").style.display = "none";
             updatePrice();
 
-            openModal("Reservation Receipt / Confirmation", `
-                <p><strong>Status:</strong> Booking Confirmed Successfully!</p>
+            openModal("Automated Notification / Receipt Simulator", `
+                <p style="color:#198754; font-weight:bold;">✉️ Automated Email & SMS confirmation generated successfully.</p>
+                <hr>
                 <p><strong>Reference ID:</strong> ${booking.id}</p>
                 <p><strong>Guest:</strong> ${booking.guestName}</p>
                 <p><strong>Service:</strong> ${booking.roomType} (${nights} nights)</p>
                 <p><strong>Total Amount:</strong> ${formatMoney(total)}</p>
                 <p><strong>Balance Due at Arrival:</strong> ${formatMoney(balanceDue)}</p>
-                <p style="color: green; font-weight: bold;">SMS confirmation text sent to ${phone}.</p>
+                <p style="font-size:12px; color:#666; margin-top:10px;">Sent via SMS to ${phone} and confirmation email dispatched.</p>
             `);
         });
 
@@ -644,24 +734,26 @@
             const b = bookings.find(x => x.id === id);
             if (b) {
                 if (status === 'Checked-out') {
-                    b.balanceDue = 0; // Clear balance upon checkout completion
+                    b.balanceDue = 0;
                 }
                 b.status = status;
+                logAudit("Status Update", `Booking ${id} status changed to ${status}`);
                 saveData();
                 renderAll();
                 showToast(`Booking ${id} status updated to ${status}`);
             }
         };
 
-        // Room Swap Feature
         window.promptRoomSwap = function(id) {
             const b = bookings.find(x => x.id === id);
             if (!b) return;
             const newType = prompt(`Current service type: ${b.roomType}. Enter new service / room type (Single, Double, Deluxe, Suite):`, b.roomType);
             if (newType && roomPrices[newType]) {
+                const oldType = b.roomType;
                 b.roomType = newType;
                 b.total = roomPrices[newType] * b.nights;
                 b.balanceDue = Math.max(0, b.total - (b.total / (b.paymentStructure === 'Deposit50' ? 2 : 1))); 
+                logAudit("Room Swap", `Swapped booking ${id} from ${oldType} to ${newType}`);
                 saveData();
                 renderAll();
                 showToast(`Successfully swapped guest to ${newType}`);
@@ -670,7 +762,6 @@
             }
         };
 
-        // Invoice Window
         window.printInvoice = function(id) {
             const b = bookings.find(x => x.id === id);
             if (!b) return;
@@ -698,10 +789,9 @@
             win.document.close();
         };
 
-        // Export CSV
         document.getElementById("exportCsvBtn").addEventListener("click", () => {
             if (bookings.length === 0) { alert("No bookings to export."); return; }
-            let csvContent = "data:text/csv;charset=utf-8,ID,Guest Name,Phone,Room Type,Check In,Check Out,Nights,Payment,Total,Balance Due,Status\n";
+            let csvContent = "data:text/csv;charset=utf-8,ID,Guest Name,Contact,Room Type,Check In,Check Out,Nights,Payment,Total,Balance Due,Status\n";
             bookings.forEach(b => {
                 csvContent += [b.id, `"${b.guestName}"`, b.phone, b.roomType, b.checkIn, b.checkOut, b.nights, b.paymentMethod, b.total, b.balanceDue, b.status].join(",") + "\n";
             });
@@ -711,6 +801,7 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+            logAudit("CSV Export", "Exported booking records to CSV");
             showToast("Exported bookings data to CSV file.");
         });
 
@@ -735,12 +826,12 @@
 
         window.toggleHK = function(unit) {
             housekeepingStatus[unit] = housekeepingStatus[unit] === "Clean" ? "Dirty" : "Clean";
+            logAudit("Housekeeping Flag", `Toggled unit ${unit} status to ${housekeepingStatus[unit]}`);
             saveData();
             renderFloorPlan();
             showToast(`Unit ${unit} marked as ${housekeepingStatus[unit]}`);
         };
 
-        // Populate unit dropdown helpers
         function populateUnitDropdowns() {
             const maintSelect = document.getElementById("maintUnit");
             const taskSelect = document.getElementById("taskUnit");
@@ -772,22 +863,67 @@
             if (!bId) { alert("Select a checked-in guest."); return; }
             const itemText = document.getElementById("posItem").value;
             const qty = Number(document.getElementById("posQty").value);
-            const unitPriceMatch = itemText.match(/KSh\s([\d,]+)/);
-            const unitPrice = unitPriceMatch ? Number(unitPriceMatch[1].replace(/,/g, '')) : 1000;
+            const unitPriceMatch = itemText.match(/[\d,]+/);
+            const unitPrice = unitPriceMatch ? Number(unitPriceMatch[0].replace(/,/g, '')) : 1000;
             const cost = unitPrice * qty;
 
             if (!posCharges[bId]) posCharges[bId] = [];
             posCharges[bId].push({ item: `${qty}x ${itemText.split(' - ')[0]}`, cost });
             
-            // Add to guest balance due
             const b = bookings.find(x => x.id === bId);
             if (b) b.balanceDue += cost;
 
+            logAudit("POS Billing", `Posted ${cost} KES charge to guest ${bId}`);
             saveData();
-            showToast(`Added ${formatMoney(cost)} POS charge to guest tab.`);
+            showToast(`Added POS charge to guest tab.`);
             document.getElementById("posForm").reset();
             renderBookings();
         });
+
+        // Loyalty & Rewards Club Module
+        function renderLoyalty() {
+            const tbody = document.getElementById("loyaltyTable");
+            tbody.innerHTML = "";
+            
+            // Aggregate spending per guest name
+            const guestMap = {};
+            bookings.forEach(b => {
+                if (b.status !== "Cancelled") {
+                    if (!guestMap[b.guestName]) guestMap[b.guestName] = { phone: b.phone, spent: 0 };
+                    guestMap[b.guestName].spent += b.total;
+                }
+            });
+            Object.keys(posCharges).forEach(bId => {
+                const b = bookings.find(x => x.id === bId);
+                if (b && guestMap[b.guestName]) {
+                    posCharges[bId].forEach(charge => guestMap[b.guestName].spent += charge.cost);
+                }
+            });
+
+            const guests = Object.keys(guestMap);
+            if (guests.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5">No guest loyalty data available.</td></tr>`;
+                return;
+            }
+
+            guests.forEach(name => {
+                const data = guestMap[name];
+                const points = Math.floor(data.spent / 100); // 1 point per 100 KES spent
+                let tier = "Bronze";
+                if (points >= 500) tier = "Gold ⭐";
+                else if (points >= 200) tier = "Silver 🥈";
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${escapeHTML(name)}</td>
+                        <td>${escapeHTML(data.phone)}</td>
+                        <td>${formatMoney(data.spent)}</td>
+                        <td><strong>${points} pts</strong></td>
+                        <td><span class="status status-Checked-in">${tier}</span></td>
+                    </tr>
+                `;
+            });
+        }
 
         // Maintenance Module
         document.getElementById("maintenanceForm").addEventListener("submit", (e) => {
@@ -800,6 +936,7 @@
                 id: "MT-" + Date.now().toString().slice(-4),
                 unit, issue, priority, status: "Pending"
             });
+            logAudit("Maintenance", `Logged issue for ${unit}: ${issue}`);
             saveData();
             renderMaintenance();
             document.getElementById("maintenanceForm").reset();
@@ -831,6 +968,7 @@
             const ticket = maintenanceTickets.find(t => t.id === id);
             if (ticket) {
                 ticket.status = "Resolved";
+                logAudit("Maintenance", `Resolved ticket ${id} for ${ticket.unit}`);
                 saveData();
                 renderMaintenance();
                 showToast(`Ticket ${id} marked as resolved.`);
@@ -848,6 +986,7 @@
                 id: "TSK-" + Date.now().toString().slice(-4),
                 unit, staff, priority, status: "Assigned"
             });
+            logAudit("Task Roster", `Assigned cleaning task for ${unit} to ${staff}`);
             saveData();
             renderTasks();
             document.getElementById("taskForm").reset();
@@ -879,13 +1018,34 @@
             const task = housekeepingTasks.find(t => t.id === id);
             if (task) {
                 task.status = "Completed";
-                housekeepingStatus[task.unit] = "Clean"; // Sync with visual floor map
+                housekeepingStatus[task.unit] = "Clean";
+                logAudit("Task Roster", `Completed task ${id} for unit ${task.unit}`);
                 saveData();
                 renderTasks();
                 renderFloorPlan();
                 showToast(`Task ${id} completed. Unit ${task.unit} marked clean.`);
             }
         };
+
+        // Audit Trail Module
+        function renderAuditLogs() {
+            const tbody = document.getElementById("auditTable");
+            tbody.innerHTML = "";
+            if (auditLogs.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4">No audit logs recorded yet.</td></tr>`;
+                return;
+            }
+            auditLogs.forEach(log => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${log.timestamp}</td>
+                        <td><strong>${escapeHTML(log.role)}</strong></td>
+                        <td>${escapeHTML(log.action)}</td>
+                        <td>${escapeHTML(log.details)}</td>
+                    </tr>
+                `;
+            });
+        }
 
         // Analytics Dashboard
         function renderAnalytics() {
@@ -921,6 +1081,7 @@
             const comment = document.getElementById("reviewComment").value.trim();
 
             reviews.unshift({ name, rating, comment, date: new Date().toLocaleDateString() });
+            logAudit("Guest Feedback", `Submitted review by ${name} (${rating} stars)`);
             saveData();
             renderReviews();
             document.getElementById("reviewForm").reset();
@@ -928,38 +1089,4 @@
         });
 
         function renderReviews() {
-            const container = document.getElementById("reviewsGrid");
-            container.innerHTML = "";
-            if (reviews.length === 0) {
-                container.innerHTML = "<p>No guest reviews submitted yet.</p>";
-                return;
-            }
-            reviews.forEach(r => {
-                const card = document.createElement("div");
-                card.className = "review-card";
-                card.innerHTML = `
-                    <h4>${escapeHTML(r.name)} <small style="font-weight:normal; font-size:11px; color:#888;">(${r.date})</small></h4>
-                    <div class="rating">${"⭐".repeat(r.rating)}</div>
-                    <p>"${escapeHTML(r.comment)}"</p>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        // Master Render Function
-        function renderAll() {
-            renderBookings();
-            renderFloorPlan();
-            populateUnitDropdowns();
-            renderPOSDropdown();
-            renderMaintenance();
-            renderTasks();
-            renderAnalytics();
-            renderReviews();
-        }
-
-        // Initial Execution
-        renderAll();
-    </script>
-</body>
-</html>
+            const container =
