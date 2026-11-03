@@ -725,70 +725,117 @@
                             <button class="checkout-button" data-action="checkout" data-id="${escapeHTML(booking.id)}">Check Out</button>
                         `;
                     }
-                } else {
-                    actions += `<span style="font-size:11px; color:#888;"> (Unlock Staff PIN)</span>`;
                 }
 
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td>${escapeHTML(booking.id)}</td>
-                    <td>${escapeHTML(booking.guestName)}</td>
-                    <td>${escapeHTML(booking.phone)}</td>
-                    <td>${escapeHTML(booking.roomType)}</td>
-                    <td>${escapeHTML(booking.checkIn)} to ${escapeHTML(booking.checkOut)}</td>
-                    <td>${escapeHTML(booking.paymentMethod)}</td>
-                    <td>${formatMoney(booking.total)}</td>
-                    <td><span class="status status-${escapeHTML(booking.status)}">${escapeHTML(booking.status)}</span></td>
-                    <td>${actions}</td>
+                bookingTable.innerHTML += `
+                    <tr>
+                        <td>${escapeHTML(booking.id)}</td>
+                        <td>${escapeHTML(booking.guestName)}</td>
+                        <td>${escapeHTML(booking.phone)}</td>
+                        <td>${escapeHTML(booking.roomType)}</td>
+                        <td>${escapeHTML(booking.checkIn)} to ${escapeHTML(booking.checkOut)} (${escapeHTML(booking.nights)}n)</td>
+                        <td>${escapeHTML(booking.paymentMethod)}</td>
+                        <td>${formatMoney(booking.total)}</td>
+                        <td><span class="status status-${escapeHTML(booking.status)}">${escapeHTML(booking.status)}</span></td>
+                        <td>${actions}</td>
+                    </tr>
                 `;
-                bookingTable.appendChild(row);
             });
         }
 
-        searchBooking.addEventListener("input", displayBookings);
-
-        bookingTable.addEventListener("click", function(e) {
-            const button = e.target.closest("button[data-action]");
-            if (!button) return;
-
-            const bookingId = button.dataset.id;
-            const action = button.dataset.action;
-            const booking = bookings.find(b => b.id === bookingId);
-
+        // Table Action Handlers (Check-in, Check-out, Cancel)
+        bookingTable.addEventListener("click", (e) => {
+            const btn = e.target.closest("button");
+            if (!btn) return;
+            const action = btn.getAttribute("data-action");
+            const id = btn.getAttribute("data-id");
+            const booking = bookings.find(b => b.id === id);
             if (!booking) return;
 
             if (action === "invoice") {
                 printInvoice(booking);
-                return;
-            }
-
-            if (!isStaffAuthenticated) {
-                alert("Please unlock Staff Mode first using PIN 1234.");
-                return;
-            }
-
-            if (action === "checkin") {
+            } else if (action === "checkin") {
                 booking.status = "Checked-in";
-                showMessage(booking.guestName + " checked in successfully.");
+                saveBookings();
+                displayBookings();
+                updateDashboard();
+                renderHousekeeping();
+                showMessage("Guest checked in successfully.");
             } else if (action === "checkout") {
                 booking.status = "Checked-out";
-                showMessage(booking.guestName + " checked out successfully.");
+                saveBookings();
+                displayBookings();
+                updateDashboard();
+                renderHousekeeping();
+                showMessage("Guest checked out successfully.");
             } else if (action === "cancel") {
-                if (confirm("Cancel booking for " + booking.guestName + "?")) {
+                if (confirm("Are you sure you want to cancel this booking?")) {
                     booking.status = "Cancelled";
-                    showMessage("Booking cancelled.");
-                } else {
-                    return;
+                    saveBookings();
+                    displayBookings();
+                    updateDashboard();
+                    renderHousekeeping();
+                    showMessage("Booking cancelled.", true);
                 }
             }
-
-            saveBookings();
-            displayBookings();
-            updateDashboard();
         });
 
-        // Reviews Handler
-        reviewForm.addEventListener("submit", function(e) {
+        // Search Filter Listener
+        searchBooking.addEventListener("input", displayBookings);
+
+        // Update Dashboard Metric Cards
+        function updateDashboard() {
+            const activeCount = bookings.filter(b => b.status === "Booked").length;
+            const checkedInCount = bookings.filter(b => b.status === "Checked-in").length;
+            
+            const occupiedMap = {};
+            bookings.forEach(b => {
+                if (b.status === "Checked-in") {
+                    occupiedMap[b.roomType] = (occupiedMap[b.roomType] || 0) + 1;
+                }
+            });
+
+            let totalOccupied = Object.values(occupiedMap).reduce((a, b) => a + b, 0);
+            let available = TOTAL_ROOMS - totalOccupied;
+
+            document.getElementById("totalRooms").textContent = TOTAL_ROOMS;
+            document.getElementById("availableRooms").textContent = Math.max(0, available);
+            document.getElementById("activeBookings").textContent = activeCount;
+            document.getElementById("checkedInGuests").textContent = checkedInCount;
+        }
+
+        // Render Housekeeping Grid
+        function renderHousekeeping() {
+            housekeepingGrid.innerHTML = "";
+            Object.keys(housekeepingStatus).forEach(roomKey => {
+                const status = housekeepingStatus[roomKey];
+                const card = document.createElement("div");
+                card.className = "hk-card";
+                card.innerHTML = `
+                    <h4>Unit: ${escapeHTML(roomKey)}</h4>
+                    <p>Status: <strong style="color: ${status === 'Clean' ? '#198754' : '#dc3545'}">${escapeHTML(status)}</strong></p>
+                    ${isStaffAuthenticated ? `
+                        <button class="secondary-button" onclick="toggleHousekeeping('${escapeHTML(roomKey)}')">
+                            Toggle Status
+                        </button>
+                    ` : ''}
+                `;
+                housekeepingGrid.appendChild(card);
+            });
+        }
+
+        window.toggleHousekeeping = function(roomKey) {
+            if (!isStaffAuthenticated) {
+                alert("Unlock staff mode first (Click Staff Login).");
+                return;
+            }
+            housekeepingStatus[roomKey] = housekeepingStatus[roomKey] === "Clean" ? "Dirty" : "Clean";
+            saveBookings();
+            renderHousekeeping();
+        };
+
+        // Reviews Rendering & Submission
+        reviewForm.addEventListener("submit", (e) => {
             e.preventDefault();
             const name = document.getElementById("reviewGuestName").value.trim();
             const rating = document.getElementById("reviewRating").value;
@@ -805,61 +852,26 @@
 
         function renderReviews() {
             reviewsGrid.innerHTML = "";
-            reviews.forEach(r => {
-                const starsCount = "⭐".repeat(Number(r.rating) || 5);
+            reviews.forEach(rev => {
+                const stars = "⭐".repeat(Number(rev.rating));
                 const card = document.createElement("div");
                 card.className = "review-card";
                 card.innerHTML = `
-                    <h4>${escapeHTML(r.name)}</h4>
-                    <div class="stars">${starsCount}</div>
-                    <p style="margin: 0; font-size: 14px; color: #555;">${escapeHTML(r.comment)}</p>
+                    <h4>${escapeHTML(rev.name)}</h4>
+                    <div class="stars">${stars}</div>
+                    <p>${escapeHTML(rev.comment)}</p>
                 `;
                 reviewsGrid.appendChild(card);
             });
         }
 
-        function renderHousekeeping() {
-            housekeepingGrid.innerHTML = "";
-            Object.keys(housekeepingStatus).forEach(slotKey => {
-                const currentStatus = housekeepingStatus[slotKey];
-                const card = document.createElement("div");
-                card.className = "hk-card";
-                card.innerHTML = `
-                    <h4>${escapeHTML(slotKey)}</h4>
-                    <p>Status: <strong>${escapeHTML(currentStatus)}</strong></p>
-                    ${isStaffAuthenticated ? `
-                        <button onclick="toggleHousekeeping('${slotKey}', 'Clean')">Clean</button>
-                        <button onclick="toggleHousekeeping('${slotKey}', 'Dirty')">Dirty</button>
-                        <button onclick="toggleHousekeeping('${slotKey}', 'Maintenance')">Maintenance</button>
-                    ` : '<span style="font-size:11px; color:#888;">Unlock Staff PIN</span>'}
-                `;
-                housekeepingGrid.appendChild(card);
-            });
-        }
-
-        window.toggleHousekeeping = function(slotKey, status) {
-            if (!isStaffAuthenticated) return;
-            housekeepingStatus[slotKey] = status;
-            saveBookings();
-            renderHousekeeping();
-        };
-
-        function updateDashboard() {
-            document.getElementById("totalRooms").textContent = TOTAL_ROOMS;
-
-            const today = new Date();
-            const todayString = [
-                today.getFullYear(),
-                String(today.getMonth() + 1).padStart(2, "0"),
-                String(today.getDate()).padStart(2, "0")
-            ].join("-");
-
-            const occupiedToday = bookings.filter(b => 
-                b.status !== "Cancelled" &&
-                b.status !== "Checked-out" &&
-                b.checkIn <= todayString &&
-                b.checkOut > todayString
-            ).length;
-
-            document.getElementById("availableRooms").textContent = TOTAL_ROOMS - occupiedToday;
-            document.getElementById("activeBookings").textContent = bookings.filter(b => b.status === "Booked" || b.status === "Checked-
+        // Run Initial Startup Functions
+        setDateRestrictions();
+        updateTotalPrice();
+        displayBookings();
+        updateDashboard();
+        renderHousekeeping();
+        renderReviews();
+    </script>
+</body>
+</html>
