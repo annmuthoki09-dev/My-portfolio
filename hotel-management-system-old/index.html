@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grand Palace Hotel Management System - Pro Edition</title>
+    <title>Grand Palace Hotel Management System - Enterprise Pro</title>
     <style>
         * { box-sizing: border-box; }
         html { scroll-behavior: smooth; }
@@ -17,15 +17,15 @@
         header h1 { margin: 0 0 10px; }
         header p { margin: 0; font-size: 15px; }
 
-        nav { background-color: #0b2239; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 1000; }
-        nav a { color: white; text-decoration: none; margin: 0 10px; font-weight: bold; font-size: 13px; }
+        nav { background-color: #0b2239; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 1000; overflow-x: auto; white-space: nowrap; }
+        nav a { color: white; text-decoration: none; margin: 0 8px; font-weight: bold; font-size: 13px; display: inline-block; }
         nav a:hover { color: #f4c542; }
 
         main { width: 95%; max-width: 1400px; margin: 25px auto; }
         section { background-color: white; padding: 25px; margin-bottom: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); }
         h2 { color: #123456; margin-top: 0; border-bottom: 2px solid #e5e7eb; padding-bottom: 12px; }
 
-        .dashboard-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+        .dashboard-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
         .card { background-color: #123456; color: white; padding: 20px; border-radius: 8px; text-align: center; }
         .card h3 { font-size: 15px; margin: 0 0 10px; }
         .card p { font-size: 26px; font-weight: bold; margin: 0; }
@@ -51,7 +51,6 @@
         .export-button { background-color: #198754; font-size: 14px; padding: 10px 18px; margin-bottom: 15px; }
         .auth-bar { float: right; margin-top: -48px; background: #fff; padding: 5px 12px; border-radius: 6px; border: 1px solid #ccc; font-size: 13px; }
 
-        #message { font-weight: bold; margin-top: 15px; }
         #searchBooking { margin-bottom: 20px; max-width: 450px; }
 
         .table-container { width: 100%; overflow-x: auto; }
@@ -67,20 +66,25 @@
         .status-Checked-out { background-color: #cfe2ff; color: #084298; }
         .status-Cancelled { background-color: #f8d7da; color: #842029; }
 
-        /* Floor plan grid */
         .floor-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 15px; margin-top: 15px; }
         .floor-card { border: 1px solid #ccc; padding: 15px; border-radius: 6px; background: #fafafa; position: relative; }
-        .floor-card.occupied { border-color: #198754; background: #f0fdf4; }
         .floor-card.dirty { border-color: #dc3545; background: #fef2f2; }
 
-        /* Notification toast */
+        .review-card { border: 1px solid #e5e7eb; border-radius: 6px; padding: 15px; background: #fcfcfc; }
+        .review-card h4 { margin: 0 0 5px; color: #123456; }
+        .review-card .rating { color: #f4c542; margin-bottom: 8px; font-size: 14px; }
+        .review-card p { margin: 0; font-size: 13px; color: #555; }
+
+        /* Modal Overlay */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 25px; border-radius: 8px; width: 90%; max-width: 550px; max-height: 90vh; overflow-y: auto; position: relative; }
+
         #toastContainer { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
         .toast { background: #0b2239; color: white; padding: 12px 18px; border-radius: 6px; font-size: 13px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); animation: fadeIn 0.3s; }
 
         footer { background-color: #0b2239; color: white; text-align: center; padding: 18px; margin-top: 30px; }
 
         @media (max-width: 900px) {
-            .dashboard-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .auth-bar { float: none; margin-bottom: 15px; display: inline-block; }
         }
     </style>
@@ -89,17 +93,19 @@
 
     <header>
         <h1>🏨 Grand Palace Hotel & Resort</h1>
-        <p>Enterprise Rooms, POS Dining, Visual Floor Map, Analytics & Staff Governance</p>
+        <p>Enterprise Management System - Pro Edition with Maintenance, Swaps & Task Governance</p>
     </header>
 
     <nav>
         <a href="#dashboard">Dashboard</a>
         <a href="#floorplan">Visual Map</a>
-        <a href="#booking">New Reservation</a>
+        <a href="#booking">Reservation</a>
         <a href="#bookings">Manage Bookings</a>
         <a href="#pos">Restaurant POS</a>
+        <a href="#maintenance">Maintenance Desk</a>
+        <a href="#tasks">Housekeeping Tasks</a>
         <a href="#analytics">Analytics</a>
-        <a href="#reviews">Guest Reviews</a>
+        <a href="#reviews">Reviews</a>
     </nav>
 
     <main>
@@ -135,7 +141,7 @@
         <!-- Visual Floor Plan Section -->
         <section id="floorplan">
             <h2>Visual Floor Map & Unit Status</h2>
-            <p style="font-size: 13px; color: #666;">Click any room/facility unit to inspect current status or toggle housekeeping flags.</p>
+            <p style="font-size: 13px; color: #666;">Inspect unit status or toggle cleanliness flags (Restricted to Authorized Staff).</p>
             <div id="floorGrid" class="floor-grid"></div>
         </section>
 
@@ -174,6 +180,12 @@
                 <label for="checkOut">End Date / Check-out:</label>
                 <input type="date" id="checkOut" required>
 
+                <label for="paymentStructure">Payment Structure:</label>
+                <select id="paymentStructure" required>
+                    <option value="Full">Full Payment Upfront</option>
+                    <option value="Deposit50">50% Deposit (Balance Due on Arrival)</option>
+                </select>
+
                 <label for="paymentMethod">Payment Method:</label>
                 <select id="paymentMethod" required>
                     <option value="Cash">Cash at Desk</option>
@@ -189,14 +201,17 @@
                 <textarea id="specialRequests" rows="2" placeholder="Optional notes..."></textarea>
 
                 <div class="price-box">
-                    <strong>Estimated Total:</strong>
-                    <span id="totalPrice">KSh 0</span>
+                    <div>
+                        <strong>Estimated Total:</strong> <span id="totalPrice">KSh 0</span>
+                    </div>
+                    <div>
+                        <strong>Due Now:</strong> <span id="dueNowPrice">KSh 0</span>
+                    </div>
                 </div>
 
                 <button type="submit">Confirm Reservation</button>
-                <button type="reset" class="secondary-button" id="resetBtn">Clear Form</button>
+                <button type="reset" class="secondary-button">Clear Form</button>
             </form>
-            <p id="message" role="status"></p>
         </section>
 
         <!-- Booking Records Section -->
@@ -215,7 +230,7 @@
                             <th>Service</th>
                             <th>Dates</th>
                             <th>Payment</th>
-                            <th>Total (KSh)</th>
+                            <th>Balance Due</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
@@ -228,7 +243,7 @@
         <!-- Restaurant POS & Ancillary Charges -->
         <section id="pos">
             <h2>Restaurant & Ancillary POS Billing</h2>
-            <p style="font-size: 13px; color: #666;">Charge extra items (meals, drinks, spa) directly to an active checked-in guest's bill.</p>
+            <p style="font-size: 13px; color: #666;">Charge extra items (meals, drinks, spa) directly to an active checked-in guest's bill tab.</p>
             <form id="posForm" style="max-width: 600px;">
                 <label for="posBookingSelect">Select Active Checked-In Guest:</label>
                 <select id="posBookingSelect" required></select>
@@ -248,7 +263,84 @@
             </form>
         </section>
 
-        <!-- Analytics & Financial Reports -->
+        <!-- Maintenance & Ticketing Desk -->
+        <section id="maintenance">
+            <h2>Maintenance & Issue Ticketing Desk</h2>
+            <p style="font-size: 13px; color: #666;">Log facility faults or room maintenance issues for technical resolution tracking.</p>
+            
+            <form id="maintenanceForm" style="max-width: 600px; margin-bottom: 20px;">
+                <label for="maintUnit">Select Unit / Area:</label>
+                <select id="maintUnit" required></select>
+
+                <label for="maintIssue">Issue Description:</label>
+                <input type="text" id="maintIssue" placeholder="e.g. AC leaking, Broken door handle..." required>
+
+                <label for="maintPriority">Priority Level:</label>
+                <select id="maintPriority" required>
+                    <option value="Routine">Routine</option>
+                    <option value="Urgent">Urgent</option>
+                    <option value="Emergency">Emergency</option>
+                </select>
+
+                <button type="submit" style="margin-top: 12px;" class="secondary-button">Submit Maintenance Ticket</button>
+            </form>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ticket ID</th>
+                            <th>Unit</th>
+                            <th>Issue Description</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="maintenanceTable"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Housekeeping Task Management -->
+        <section id="tasks">
+            <h2>Housekeeping Team Task Roster</h2>
+            <p style="font-size: 13px; color: #666;">Assign specific room sanitation tasks to housekeeping team personnel.</p>
+            
+            <form id="taskForm" style="max-width: 600px; margin-bottom: 20px;">
+                <label for="taskUnit">Select Unit:</label>
+                <select id="taskUnit" required></select>
+
+                <label for="taskStaff">Assign Housekeeper Staff:</label>
+                <input type="text" id="taskStaff" placeholder="Staff member name" required>
+
+                <label for="taskPriority">Priority:</label>
+                <select id="taskPriority" required>
+                    <option value="Normal">Normal Turnaround</option>
+                    <option value="High Priority">High Priority (VIP / Quick Turnaround)</option>
+                </select>
+
+                <button type="submit" style="margin-top: 12px;" class="checkin-button">Assign Cleaning Task</button>
+            </form>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Task ID</th>
+                            <th>Unit</th>
+                            <th>Assigned Staff</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="taskTable"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Financial Analytics & Reports -->
         <section id="analytics">
             <h2>Financial & Revenue Analytics</h2>
             <div class="dashboard-cards">
@@ -299,10 +391,21 @@
 
     </main>
 
+    <!-- Modal Box for Interactive Popups / Receipts -->
+    <div id="customModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="modalTitle">Notification / Document</h3>
+            <div id="modalBody" style="margin: 15px 0; font-size: 14px; line-height: 1.5;"></div>
+            <div style="text-align: right;">
+                <button type="button" class="secondary-button" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
     <div id="toastContainer"></div>
 
     <footer>
-        <p>&copy; 2026 Grand Palace Hotel & Resort | Pro Enterprise System</p>
+        <p>&copy; 2026 Grand Palace Hotel & Resort | Enterprise Pro Edition</p>
     </footer>
 
     <script>
@@ -333,12 +436,14 @@
             RECEPTIONIST: { pin: "1111", name: "Front Desk Receptionist" },
             HOUSEKEEPER: { pin: "2222", name: "Housekeeping Supervisor" }
         };
-        let currentUserRole = null; // null = Guest
+        let currentUserRole = null;
 
         let bookings = JSON.parse(localStorage.getItem("hotelBookings") || "[]");
         let housekeepingStatus = JSON.parse(localStorage.getItem("hotelHousekeeping") || "{}");
         let posCharges = JSON.parse(localStorage.getItem("hotelPosCharges") || "{}");
         let reviews = JSON.parse(localStorage.getItem("hotelReviews") || "[]");
+        let maintenanceTickets = JSON.parse(localStorage.getItem("hotelMaintenance") || "[]");
+        let housekeepingTasks = JSON.parse(localStorage.getItem("hotelTasks") || "[]");
 
         if (Object.keys(housekeepingStatus).length === 0) {
             Object.keys(roomCapacity).forEach(type => {
@@ -363,6 +468,17 @@
             localStorage.setItem("hotelHousekeeping", JSON.stringify(housekeepingStatus));
             localStorage.setItem("hotelPosCharges", JSON.stringify(posCharges));
             localStorage.setItem("hotelReviews", JSON.stringify(reviews));
+            localStorage.setItem("hotelMaintenance", JSON.stringify(maintenanceTickets));
+            localStorage.setItem("hotelTasks", JSON.stringify(housekeepingTasks));
+        }
+
+        function openModal(title, htmlContent) {
+            document.getElementById("modalTitle").textContent = title;
+            document.getElementById("modalBody").innerHTML = htmlContent;
+            document.getElementById("customModal").style.display = "flex";
+        }
+        function closeModal() {
+            document.getElementById("customModal").style.display = "none";
         }
 
         // Auth Handler
@@ -414,11 +530,20 @@
         const checkInEl = document.getElementById("checkIn"), checkOutEl = document.getElementById("checkOut");
         checkInEl.addEventListener("change", () => { checkOutEl.min = checkInEl.value; updatePrice(); });
         checkOutEl.addEventListener("change", updatePrice);
+        document.getElementById("paymentStructure").addEventListener("change", updatePrice);
 
         function updatePrice() {
             const t = roomTypeEl.value, s = checkInEl.value, e = checkOutEl.value;
-            if (!t || !s || !e || calcNights(s, e) <= 0) { document.getElementById("totalPrice").textContent = formatMoney(0); return; }
-            document.getElementById("totalPrice").textContent = formatMoney(roomPrices[t] * calcNights(s, e));
+            const structure = document.getElementById("paymentStructure").value;
+            if (!t || !s || !e || calcNights(s, e) <= 0) { 
+                document.getElementById("totalPrice").textContent = formatMoney(0);
+                document.getElementById("dueNowPrice").textContent = formatMoney(0);
+                return; 
+            }
+            const total = roomPrices[t] * calcNights(s, e);
+            const dueNow = structure === "Deposit50" ? total / 2 : total;
+            document.getElementById("totalPrice").textContent = formatMoney(total);
+            document.getElementById("dueNowPrice").textContent = formatMoney(dueNow);
         }
 
         document.getElementById("paymentMethod").addEventListener("change", (e) => {
@@ -432,10 +557,15 @@
             const type = roomTypeEl.value;
             const start = checkInEl.value, end = checkOutEl.value;
             const payMethod = document.getElementById("paymentMethod").value;
+            const structure = document.getElementById("paymentStructure").value;
             const nights = calcNights(start, end);
 
             if (nights <= 0) { alert("Check-out must be after check-in."); return; }
             if (!isRoomAvailable(type, start, end)) { alert("No slots available for " + type + " on selected dates."); return; }
+
+            const total = roomPrices[type] * nights;
+            const paidNow = structure === "Deposit50" ? total / 2 : total;
+            const balanceDue = total - paidNow;
 
             if (payMethod === "MPesa") {
                 const mPhone = document.getElementById("mpesaPhone").value.trim();
@@ -446,8 +576,8 @@
             const booking = {
                 id: "BK-" + Date.now().toString().slice(-6),
                 guestName: name, phone, roomType: type, checkIn: start, checkOut: end, nights,
-                paymentMethod: payMethod, specialRequests: document.getElementById("specialRequests").value.trim(),
-                total: roomPrices[type] * nights, status: "Booked"
+                paymentMethod: payMethod, paymentStructure: structure, specialRequests: document.getElementById("specialRequests").value.trim(),
+                total, balanceDue, status: "Booked"
             };
 
             bookings.push(booking);
@@ -456,7 +586,17 @@
             document.getElementById("bookingForm").reset();
             document.getElementById("roomPreviewBox").style.display = "none";
             document.getElementById("mpesaBox").style.display = "none";
-            showToast("Reservation confirmed! ID: " + booking.id);
+            updatePrice();
+
+            openModal("Reservation Receipt / Confirmation", `
+                <p><strong>Status:</strong> Booking Confirmed Successfully!</p>
+                <p><strong>Reference ID:</strong> ${booking.id}</p>
+                <p><strong>Guest:</strong> ${booking.guestName}</p>
+                <p><strong>Service:</strong> ${booking.roomType} (${nights} nights)</p>
+                <p><strong>Total Amount:</strong> ${formatMoney(total)}</p>
+                <p><strong>Balance Due at Arrival:</strong> ${formatMoney(balanceDue)}</p>
+                <p style="color: green; font-weight: bold;">SMS confirmation text sent to ${phone}.</p>
+            `);
         });
 
         // Render Bookings Table
@@ -480,6 +620,7 @@
                         if (currentUserRole === ROLES.MANAGER) actions += `<button class="cancel-button" onclick="updateStatus('${b.id}', 'Cancelled')">Cancel</button>`;
                     } else if (b.status === "Checked-in") {
                         actions += `<button class="checkout-button" onclick="updateStatus('${b.id}', 'Checked-out')">Check Out</button>`;
+                        actions += `<button class="secondary-button" onclick="promptRoomSwap('${b.id}')">Swap Room</button>`;
                     }
                 }
 
@@ -490,8 +631,8 @@
                         <td>${escapeHTML(b.phone)}</td>
                         <td>${escapeHTML(b.roomType)}</td>
                         <td>${escapeHTML(b.checkIn)} to ${escapeHTML(b.checkOut)}</td>
-                        <td>${escapeHTML(b.paymentMethod)}</td>
-                        <td>${formatMoney(b.total)}</td>
+                        <td>${escapeHTML(b.paymentMethod)} (${escapeHTML(b.paymentStructure)})</td>
+                        <td style="color:${b.balanceDue > 0 ? 'red' : 'green'}; font-weight:bold;">${formatMoney(b.balanceDue)}</td>
                         <td><span class="status status-${b.status}">${b.status}</span></td>
                         <td>${actions}</td>
                     </tr>
@@ -502,10 +643,30 @@
         window.updateStatus = function(id, status) {
             const b = bookings.find(x => x.id === id);
             if (b) {
+                if (status === 'Checked-out') {
+                    b.balanceDue = 0; // Clear balance upon checkout completion
+                }
                 b.status = status;
                 saveData();
                 renderAll();
                 showToast(`Booking ${id} status updated to ${status}`);
+            }
+        };
+
+        // Room Swap Feature
+        window.promptRoomSwap = function(id) {
+            const b = bookings.find(x => x.id === id);
+            if (!b) return;
+            const newType = prompt(`Current service type: ${b.roomType}. Enter new service / room type (Single, Double, Deluxe, Suite):`, b.roomType);
+            if (newType && roomPrices[newType]) {
+                b.roomType = newType;
+                b.total = roomPrices[newType] * b.nights;
+                b.balanceDue = Math.max(0, b.total - (b.total / (b.paymentStructure === 'Deposit50' ? 2 : 1))); 
+                saveData();
+                renderAll();
+                showToast(`Successfully swapped guest to ${newType}`);
+            } else if (newType) {
+                alert("Invalid room type specified.");
             }
         };
 
@@ -528,13 +689,30 @@
                     <p><strong>Dates:</strong> ${b.checkIn} to ${b.checkOut} (${b.nights} nights)</p>
                     <hr>
                     <p>Room/Service (${b.roomType}): <strong>${formatMoney(b.total)}</strong></p>
-                    ${extraCharges.length > 0 ? `<p>Ancillary POS Charges: ${extraTotal}</p>` : ''}
+                    ${extraCharges.length > 0 ? `<p>Ancillary POS Charges Total: ${formatMoney(extraTotal)}</p>` : ''}
                     <h3>Grand Total: ${formatMoney(grandTotal)}</h3>
+                    <p>Balance Due: <strong>${formatMoney(b.balanceDue + extraTotal)}</strong></p>
                     <script>window.print();<\/script>
                 </body></html>
             `);
             win.document.close();
         };
+
+        // Export CSV
+        document.getElementById("exportCsvBtn").addEventListener("click", () => {
+            if (bookings.length === 0) { alert("No bookings to export."); return; }
+            let csvContent = "data:text/csv;charset=utf-8,ID,Guest Name,Phone,Room Type,Check In,Check Out,Nights,Payment,Total,Balance Due,Status\n";
+            bookings.forEach(b => {
+                csvContent += [b.id, `"${b.guestName}"`, b.phone, b.roomType, b.checkIn, b.checkOut, b.nights, b.paymentMethod, b.total, b.balanceDue, b.status].join(",") + "\n";
+            });
+            const link = document.createElement("a");
+            link.setAttribute("href", encodeURI(csvContent));
+            link.setAttribute("download", `hotel_bookings_${Date.now()}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast("Exported bookings data to CSV file.");
+        });
 
         // Visual Floor Plan Grid
         function renderFloorPlan() {
@@ -562,6 +740,18 @@
             showToast(`Unit ${unit} marked as ${housekeepingStatus[unit]}`);
         };
 
+        // Populate unit dropdown helpers
+        function populateUnitDropdowns() {
+            const maintSelect = document.getElementById("maintUnit");
+            const taskSelect = document.getElementById("taskUnit");
+            maintSelect.innerHTML = "";
+            taskSelect.innerHTML = "";
+            Object.keys(housekeepingStatus).forEach(u => {
+                maintSelect.innerHTML += `<option value="${u}">Unit ${u}</option>`;
+                taskSelect.innerHTML += `<option value="${u}">Unit ${u}</option>`;
+            });
+        }
+
         // POS Module
         const posSelect = document.getElementById("posBookingSelect");
         function renderPOSDropdown() {
@@ -588,10 +778,114 @@
 
             if (!posCharges[bId]) posCharges[bId] = [];
             posCharges[bId].push({ item: `${qty}x ${itemText.split(' - ')[0]}`, cost });
+            
+            // Add to guest balance due
+            const b = bookings.find(x => x.id === bId);
+            if (b) b.balanceDue += cost;
+
             saveData();
-            showToast(`Added ${formatMoney(cost)} charge to guest tab.`);
+            showToast(`Added ${formatMoney(cost)} POS charge to guest tab.`);
             document.getElementById("posForm").reset();
+            renderBookings();
         });
+
+        // Maintenance Module
+        document.getElementById("maintenanceForm").addEventListener("submit", (e) => {
+            e.preventDefault();
+            const unit = document.getElementById("maintUnit").value;
+            const issue = document.getElementById("maintIssue").value.trim();
+            const priority = document.getElementById("maintPriority").value;
+
+            maintenanceTickets.push({
+                id: "MT-" + Date.now().toString().slice(-4),
+                unit, issue, priority, status: "Pending"
+            });
+            saveData();
+            renderMaintenance();
+            document.getElementById("maintenanceForm").reset();
+            showToast("Maintenance ticket logged successfully.");
+        });
+
+        function renderMaintenance() {
+            const tbody = document.getElementById("maintenanceTable");
+            tbody.innerHTML = "";
+            if (maintenanceTickets.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6">No maintenance issues logged.</td></tr>`;
+                return;
+            }
+            maintenanceTickets.forEach(m => {
+                tbody.innerHTML = `
+                    <tr>
+                        <td>${m.id}</td>
+                        <td>${m.unit}</td>
+                        <td>${escapeHTML(m.issue)}</td>
+                        <td>${m.priority}</td>
+                        <td><span class="status status-${m.status === 'Resolved' ? 'Checked-out' : 'Booked'}">${m.status}</span></td>
+                        <td>${m.status !== 'Resolved' ? `<button class="checkin-button" onclick="resolveMaintenance('${m.id}')">Mark Resolved</button>` : 'Completed'}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        window.resolveMaintenance = function(id) {
+            const ticket = maintenanceTickets.find(t => t.id === id);
+            if (ticket) {
+                ticket.status = "Resolved";
+                saveData();
+                renderMaintenance();
+                showToast(`Ticket ${id} marked as resolved.`);
+            }
+        };
+
+        // Housekeeping Task Roster Module
+        document.getElementById("taskForm").addEventListener("submit", (e) => {
+            e.preventDefault();
+            const unit = document.getElementById("taskUnit").value;
+            const staff = document.getElementById("taskStaff").value.trim();
+            const priority = document.getElementById("taskPriority").value;
+
+            housekeepingTasks.push({
+                id: "TSK-" + Date.now().toString().slice(-4),
+                unit, staff, priority, status: "Assigned"
+            });
+            saveData();
+            renderTasks();
+            document.getElementById("taskForm").reset();
+            showToast("Cleaning task assigned successfully.");
+        });
+
+        function renderTasks() {
+            const tbody = document.getElementById("taskTable");
+            tbody.innerHTML = "";
+            if (housekeepingTasks.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6">No cleaning tasks assigned.</td></tr>`;
+                return;
+            }
+            housekeepingTasks.forEach(t => {
+                tbody.innerHTML = `
+                    <tr>
+                        <td>${t.id}</td>
+                        <td>${t.unit}</td>
+                        <td>${escapeHTML(t.staff)}</td>
+                        <td>${t.priority}</td>
+                        <td><span class="status status-${t.status === 'Completed' ? 'Checked-out' : 'Booked'}">${t.status}</span></td>
+                        <td>${t.status !== 'Completed' ? `<button class="checkin-button" onclick="completeTask('${t.id}')">Complete</button>` : 'Done'}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        window.completeTask = function(id) {
+            const task = housekeepingTasks.find(t => t.id === id);
+            if (task) {
+                task.status = "Completed";
+                housekeepingStatus[task.unit] = "Clean"; // Sync with visual floor map
+                saveData();
+                renderTasks();
+                renderFloorPlan();
+                showToast(`Task ${id} completed. Unit ${task.unit} marked clean.`);
+            }
+        };
 
         // Analytics Dashboard
         function renderAnalytics() {
@@ -610,4 +904,62 @@
 
             document.getElementById("statGrossRev").textContent = formatMoney(gross);
             document.getElementById("statMpesa").textContent = formatMoney(mpesa);
-            document.getElementById("stat
+            document.getElementById("statCash").textContent = formatMoney(cash);
+            document.getElementById("statOccupancy").textContent = occupancy + "%";
+
+            document.getElementById("totalRooms").textContent = TOTAL_UNITS;
+            document.getElementById("availableRooms").textContent = Math.max(0, TOTAL_UNITS - checkedInCount);
+            document.getElementById("activeBookings").textContent = bookings.filter(b => b.status === "Booked").length;
+            document.getElementById("checkedInGuests").textContent = checkedInCount;
+        }
+
+        // Reviews Module
+        document.getElementById("reviewForm").addEventListener("submit", (e) => {
+            e.preventDefault();
+            const name = document.getElementById("reviewGuestName").value.trim();
+            const rating = document.getElementById("reviewRating").value;
+            const comment = document.getElementById("reviewComment").value.trim();
+
+            reviews.unshift({ name, rating, comment, date: new Date().toLocaleDateString() });
+            saveData();
+            renderReviews();
+            document.getElementById("reviewForm").reset();
+            showToast("Thank you for your feedback!");
+        });
+
+        function renderReviews() {
+            const container = document.getElementById("reviewsGrid");
+            container.innerHTML = "";
+            if (reviews.length === 0) {
+                container.innerHTML = "<p>No guest reviews submitted yet.</p>";
+                return;
+            }
+            reviews.forEach(r => {
+                const card = document.createElement("div");
+                card.className = "review-card";
+                card.innerHTML = `
+                    <h4>${escapeHTML(r.name)} <small style="font-weight:normal; font-size:11px; color:#888;">(${r.date})</small></h4>
+                    <div class="rating">${"⭐".repeat(r.rating)}</div>
+                    <p>"${escapeHTML(r.comment)}"</p>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Master Render Function
+        function renderAll() {
+            renderBookings();
+            renderFloorPlan();
+            populateUnitDropdowns();
+            renderPOSDropdown();
+            renderMaintenance();
+            renderTasks();
+            renderAnalytics();
+            renderReviews();
+        }
+
+        // Initial Execution
+        renderAll();
+    </script>
+</body>
+</html>
