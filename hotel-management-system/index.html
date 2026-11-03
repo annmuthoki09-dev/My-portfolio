@@ -1,1092 +1,588 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grand Palace Hotel Management System - Enterprise Elite Edition</title>
-    <style>
-        * { box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body { font-family: Arial, sans-serif; margin: 0; background-color: #f4f6f9; color: #333; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grand Palace Hotel & Resort | Gallery</title>
 
-        header {
-            background: linear-gradient(rgba(18, 52, 86, 0.88), rgba(18, 52, 86, 0.88)), 
-                        url('https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
-            color: white; text-align: center; padding: 40px 15px;
-        }
-        header h1 { margin: 0 0 10px; }
-        header p { margin: 0; font-size: 15px; }
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-        nav { background-color: #0b2239; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 1000; overflow-x: auto; white-space: nowrap; }
-        nav a { color: white; text-decoration: none; margin: 0 8px; font-weight: bold; font-size: 13px; display: inline-block; }
-        nav a:hover { color: #f4c542; }
+html {
+    scroll-behavior: smooth;
+}
 
-        main { width: 95%; max-width: 1400px; margin: 25px auto; }
-        section { background-color: white; padding: 25px; margin-bottom: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); }
-        h2 { color: #123456; margin-top: 0; border-bottom: 2px solid #e5e7eb; padding-bottom: 12px; }
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+    color: #263445;
+}
 
-        .dashboard-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
-        .card { background-color: #123456; color: white; padding: 20px; border-radius: 8px; text-align: center; }
-        .card h3 { font-size: 15px; margin: 0 0 10px; }
-        .card p { font-size: 26px; font-weight: bold; margin: 0; }
+/* HEADER */
+header {
+    min-height: 350px;
+    background:
+    linear-gradient(rgba(5,25,45,.75),rgba(5,25,45,.75)),
+    url("https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1600")
+    center/cover;
+    color: white;
+    text-align: center;
+    padding: 90px 20px;
+}
 
-        form { max-width: 650px; }
-        label { display: block; margin-top: 15px; margin-bottom: 7px; font-weight: bold; font-size: 14px; }
-        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 15px; }
-        input:focus, select:focus, textarea:focus { outline: 2px solid #2878b5; border-color: transparent; }
+header h1 {
+    font-size: clamp(30px,5vw,48px);
+    margin-bottom: 15px;
+}
 
-        .room-preview-box { margin-top: 12px; display: none; }
-        .room-preview-box img { width: 100%; height: 260px; object-fit: cover; border-radius: 6px; border: 1px solid #ddd; }
+header p {
+    font-size: 17px;
+}
 
-        .price-box { display: flex; justify-content: space-between; gap: 10px; margin: 20px 0; padding: 15px; background-color: #eaf4ff; border-radius: 5px; }
-        #totalPrice { font-weight: bold; color: #123456; }
+/* NAVIGATION */
+nav {
+    background: #0b2239;
+    padding: 18px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
 
-        button { background-color: #123456; color: white; border: none; padding: 10px 14px; margin: 3px; border-radius: 5px; cursor: pointer; font-size: 13px; }
-        button:hover { opacity: 0.85; }
-        .secondary-button { background-color: #6c757d; }
-        .checkin-button { background-color: #198754; }
-        .checkout-button { background-color: #0d6efd; }
-        .cancel-button { background-color: #dc3545; }
-        .invoice-button { background-color: #6f42c1; }
-        .export-button { background-color: #198754; font-size: 14px; padding: 10px 18px; margin-bottom: 15px; }
-        
-        .top-bar-controls { display: flex; justify-content: flex-end; align-items: center; gap: 15px; margin-bottom: -35px; position: relative; z-index: 1010; }
-        .currency-selector { padding: 5px 10px; border-radius: 5px; font-size: 13px; border: 1px solid #ccc; background: white; font-weight: bold; }
-        .auth-bar { background: #fff; padding: 5px 12px; border-radius: 6px; border: 1px solid #ccc; font-size: 13px; }
+nav a {
+    display: inline-block;
+    color: white;
+    text-decoration: none;
+    margin: 5px 12px;
+    font-size: 14px;
+    font-weight: bold;
+}
 
-        #searchBooking { margin-bottom: 20px; max-width: 450px; }
+nav a:hover {
+    color: #f4c542;
+}
 
-        .table-container { width: 100%; overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 1100px; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; font-size: 14px; }
-        th { background-color: #123456; color: white; }
-        tbody tr:nth-child(even) { background-color: #f2f6fa; }
-        tbody tr:hover { background-color: #eaf4ff; }
+/* INTRODUCTION */
+.intro {
+    text-align: center;
+    padding: 45px 20px 20px;
+}
 
-        .status { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
-        .status-Booked { background-color: #fff3cd; color: #664d03; }
-        .status-Checked-in { background-color: #d1e7dd; color: #0f5132; }
-        .status-Checked-out { background-color: #cfe2ff; color: #084298; }
-        .status-Cancelled { background-color: #f8d7da; color: #842029; }
+.intro h2 {
+    color: #123456;
+    font-size: 30px;
+    margin-bottom: 12px;
+}
 
-        .floor-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 15px; margin-top: 15px; }
-        .floor-card { border: 1px solid #ccc; padding: 15px; border-radius: 6px; background: #fafafa; position: relative; }
-        .floor-card.dirty { border-color: #dc3545; background: #fef2f2; }
+.intro p {
+    color: #666;
+    line-height: 1.7;
+}
 
-        .review-card { border: 1px solid #e5e7eb; border-radius: 6px; padding: 15px; background: #fcfcfc; }
-        .review-card h4 { margin: 0 0 5px; color: #123456; }
-        .review-card .rating { color: #f4c542; margin-bottom: 8px; font-size: 14px; }
-        .review-card p { margin: 0; font-size: 13px; color: #555; }
+/* FILTER BUTTONS */
+.filters {
+    text-align: center;
+    padding: 25px 15px;
+}
 
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 25px; border-radius: 8px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; position: relative; }
+.filters button {
+    border: none;
+    padding: 12px 20px;
+    margin: 5px;
+    border-radius: 5px;
+    background: #123456;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+}
 
-        #toastContainer { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
-        .toast { background: #0b2239; color: white; padding: 12px 18px; border-radius: 6px; font-size: 13px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); animation: fadeIn 0.3s; }
+.filters button:hover,
+.filters button.active {
+    background: #d6a52d;
+    color: #14283c;
+}
 
-        footer { background-color: #0b2239; color: white; text-align: center; padding: 18px; margin-top: 30px; }
+/* GALLERY */
+.gallery-section {
+    width: 94%;
+    max-width: 1400px;
+    margin: 25px auto 50px;
+}
 
-        @media (max-width: 900px) {
-            .top-bar-controls { flex-direction: column; align-items: flex-end; margin-bottom: 0; }
-        }
-    </style>
+.category-title {
+    color: #123456;
+    font-size: 25px;
+    margin: 35px 0 18px;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 12px;
+}
+
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
+    gap: 20px;
+}
+
+.gallery-card {
+    background: white;
+    border-radius: 9px;
+    overflow: hidden;
+    box-shadow: 0 3px 12px rgba(0,0,0,.1);
+    transition: .3s;
+}
+
+.gallery-card:hover {
+    transform: translateY(-5px);
+}
+
+.gallery-card img {
+    width: 100%;
+    height: 230px;
+    object-fit: cover;
+    display: block;
+    cursor: pointer;
+}
+
+.gallery-info {
+    padding: 17px;
+}
+
+.gallery-info h3 {
+    color: #123456;
+    margin-bottom: 8px;
+}
+
+.gallery-info p {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.6;
+}
+
+/* BOOKING CTA */
+.booking {
+    background: linear-gradient(120deg,#123456,#0b2239);
+    color: white;
+    text-align: center;
+    padding: 65px 20px;
+}
+
+.booking h2 {
+    font-size: 30px;
+    margin-bottom: 15px;
+}
+
+.booking p {
+    margin-bottom: 25px;
+}
+
+.booking a {
+    display: inline-block;
+    padding: 14px 25px;
+    background: #e3b43b;
+    color: #10283f;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+/* IMAGE PREVIEW */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    inset: 0;
+    background: rgba(0,0,0,.9);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal img {
+    max-width: 95%;
+    max-height: 85vh;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: white;
+    font-size: 40px;
+    cursor: pointer;
+}
+
+/* FOOTER */
+footer {
+    background: #071a2d;
+    color: white;
+    text-align: center;
+    padding: 25px;
+    font-size: 13px;
+}
+
+@media(max-width:600px) {
+    nav {
+        white-space: nowrap;
+        overflow-x: auto;
+    }
+
+    nav a {
+        margin: 5px 8px;
+    }
+
+    .gallery {
+        grid-template-columns: 1fr;
+    }
+
+    header {
+        padding: 70px 15px;
+    }
+}
+</style>
 </head>
+
 <body>
 
-    <header>
-        <h1>🏨 Grand Palace Hotel & Resort</h1>
-        <p>Enterprise Management System - Elite Edition with Multi-Currency, Loyalty & Audit Logs</p>
-    </header>
-
-    <nav>
-        <a href="#dashboard">Dashboard</a>
-        <a href="#floorplan">Visual Map</a>
-        <a href="#booking">Reservation</a>
-        <a href="#bookings">Manage Bookings</a>
-        <a href="#pos">Restaurant POS</a>
-        <a href="#loyalty">Loyalty Club</a>
-        <a href="#maintenance">Maintenance</a>
-        <a href="#tasks">Housekeeping Tasks</a>
-        <a href="#audit">Audit Logs</a>
-        <a href="#analytics">Analytics</a>
-        <a href="#reviews">Reviews</a>
-    </nav>
-
-    <main>
-
-        <!-- Dashboard Section -->
-        <section id="dashboard">
-            <div class="top-bar-controls">
-                <div>
-                    <label for="globalCurrency" style="display:inline; font-size:12px; margin-right:5px;">Currency:</label>
-                    <select id="globalCurrency" class="currency-selector">
-                        <option value="KES">KSh (KES)</option>
-                        <option value="USD">USD ($)</option>
-                        <option value="EUR">EUR (€)</option>
-                        <option value="GBP">GBP (£)</option>
-                    </select>
-                </div>
-                <div class="auth-bar">
-                    <span>Role: <strong id="currentRoleDisplay">Guest / Public</strong></span>
-                    <button id="authBtn" class="secondary-button" style="padding: 4px 10px; margin-left: 8px;">Staff Login</button>
-                </div>
-            </div>
-
-            <h2>Dashboard</h2>
-            <div class="dashboard-cards" style="margin-top: 15px;">
-                <div class="card">
-                    <h3>Total Units</h3>
-                    <p id="totalRooms">22</p>
-                </div>
-                <div class="card">
-                    <h3>Available Units</h3>
-                    <p id="availableRooms">22</p>
-                </div>
-                <div class="card">
-                    <h3>Active Bookings</h3>
-                    <p id="activeBookings">0</p>
-                </div>
-                <div class="card">
-                    <h3>Checked-in Guests</h3>
-                    <p id="checkedInGuests">0</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Visual Floor Plan Section -->
-        <section id="floorplan">
-            <h2>Visual Floor Map & Unit Status</h2>
-            <p style="font-size: 13px; color: #666;">Inspect unit status or toggle cleanliness flags.</p>
-            <div id="floorGrid" class="floor-grid"></div>
-        </section>
-
-        <!-- Booking Form Section -->
-        <section id="booking">
-            <h2>Register Guest / Book Service</h2>
-            <form id="bookingForm">
-                <label for="guestName">Guest Full Name:</label>
-                <input type="text" id="guestName" placeholder="Enter guest name" required>
-
-                <label for="phone">Phone Number / Email:</label>
-                <input type="text" id="phone" placeholder="Enter phone number or email" required>
-
-                <label for="roomType">Select Room, Activity or Service Package:</label>
-                <select id="roomType" required>
-                    <option value="">Select Service / Facility</option>
-                    <option value="Single">Single Room - 2,000 / night</option>
-                    <option value="Double">Double Room - 3,500 / night</option>
-                    <option value="Deluxe">Deluxe Room - 5,000 / night</option>
-                    <option value="Suite">Suite - 8,000 / night</option>
-                    <option value="SwimmingPool">Swimming Pool Pass - 1,500</option>
-                    <option value="BoatRiding">Boat Riding Experience - 2,500</option>
-                    <option value="Food">Romantic Candlelight Dining - 1,800</option>
-                    <option value="Drinks">Beverages & Bar Package - 1,200</option>
-                    <option value="Spa">Spa & Wellness Package - 4,000</option>
-                    <option value="Conference">Conference & Event Hall - 15,000</option>
-                </select>
-
-                <div id="roomPreviewBox" class="room-preview-box">
-                    <img id="roomImage" src="" alt="Service Preview">
-                </div>
-
-                <label for="checkIn">Start Date / Check-in:</label>
-                <input type="date" id="checkIn" required>
-
-                <label for="checkOut">End Date / Check-out:</label>
-                <input type="date" id="checkOut" required>
-
-                <label for="paymentStructure">Payment Structure:</label>
-                <select id="paymentStructure" required>
-                    <option value="Full">Full Payment Upfront</option>
-                    <option value="Deposit50">50% Deposit (Balance Due on Arrival)</option>
-                </select>
-
-                <label for="paymentMethod">Payment Method:</label>
-                <select id="paymentMethod" required>
-                    <option value="Cash">Cash at Desk</option>
-                    <option value="MPesa">M-Pesa Mobile Money</option>
-                </select>
-
-                <div id="mpesaBox" style="display: none; margin-top: 10px;">
-                    <label for="mpesaPhone">M-Pesa Phone Number:</label>
-                    <input type="tel" id="mpesaPhone" placeholder="e.g. 0712345678">
-                </div>
-
-                <label for="specialRequests">Special Requests / Dietary Notes:</label>
-                <textarea id="specialRequests" rows="2" placeholder="Optional notes..."></textarea>
-
-                <div class="price-box">
-                    <div>
-                        <strong>Estimated Total:</strong> <span id="totalPrice">0</span>
-                    </div>
-                    <div>
-                        <strong>Due Now:</strong> <span id="dueNowPrice">0</span>
-                    </div>
-                </div>
-
-                <button type="submit">Confirm Reservation</button>
-                <button type="reset" class="secondary-button">Clear Form</button>
-            </form>
-        </section>
-
-        <!-- Booking Records Section -->
-        <section id="bookings">
-            <h2>All Guest Bookings</h2>
-            <button id="exportCsvBtn" class="export-button">📥 Export Bookings to CSV</button>
-            <input type="search" id="searchBooking" placeholder="Search by guest name, phone, or ID..." aria-label="Search bookings">
-
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Guest Name</th>
-                            <th>Contact</th>
-                            <th>Service</th>
-                            <th>Dates</th>
-                            <th>Payment</th>
-                            <th>Balance Due</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="bookingTable"></tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- Restaurant POS & Ancillary Charges -->
-        <section id="pos">
-            <h2>Restaurant & Ancillary POS Billing</h2>
-            <p style="font-size: 13px; color: #666;">Charge extra items directly to an active checked-in guest's bill tab.</p>
-            <form id="posForm" style="max-width: 600px;">
-                <label for="posBookingSelect">Select Active Checked-In Guest:</label>
-                <select id="posBookingSelect" required></select>
-
-                <label for="posItem">Ancillary Item / Service:</label>
-                <select id="posItem" required>
-                    <option value="Tilapia Special - 1,200">Tilapia & Fries Meal - 1,200</option>
-                    <option value="Cocktail Pitcher - 1,500">Cocktail Pitcher - 1,500</option>
-                    <option value="Full Body Massage - 3,000">Full Body Massage - 3,000</option>
-                    <option value="Boat Tour Extra - 1,000">Additional Boat Tour Pass - 1,000</option>
-                </select>
-
-                <label for="posQty">Quantity:</label>
-                <input type="number" id="posQty" value="1" min="1" max="10" required>
-
-                <button type="submit" style="margin-top: 15px;" class="checkin-button">Post Charge to Guest Tab</button>
-            </form>
-        </section>
-
-        <!-- Loyalty & Membership Club -->
-        <section id="loyalty">
-            <h2>Guest Loyalty & Rewards Club</h2>
-            <p style="font-size: 13px; color: #666;">Track guest loyalty points earned from stays and bookings (Tier status: Bronze, Silver, Gold).</p>
-            
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Guest Name</th>
-                            <th>Contact</th>
-                            <th>Total Spent</th>
-                            <th>Loyalty Points</th>
-                            <th>Tier Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="loyaltyTable"></tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- Maintenance & Ticketing Desk -->
-        <section id="maintenance">
-            <h2>Maintenance & Issue Ticketing Desk</h2>
-            <p style="font-size: 13px; color: #666;">Log facility faults or room maintenance issues for technical resolution tracking.</p>
-            
-            <form id="maintenanceForm" style="max-width: 600px; margin-bottom: 20px;">
-                <label for="maintUnit">Select Unit / Area:</label>
-                <select id="maintUnit" required></select>
-
-                <label for="maintIssue">Issue Description:</label>
-                <input type="text" id="maintIssue" placeholder="e.g. AC leaking, Broken door handle..." required>
-
-                <label for="maintPriority">Priority Level:</label>
-                <select id="maintPriority" required>
-                    <option value="Routine">Routine</option>
-                    <option value="Urgent">Urgent</option>
-                    <option value="Emergency">Emergency</option>
-                </select>
-
-                <button type="submit" style="margin-top: 12px;" class="secondary-button">Submit Maintenance Ticket</button>
-            </form>
-
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Ticket ID</th>
-                            <th>Unit</th>
-                            <th>Issue Description</th>
-                            <th>Priority</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="maintenanceTable"></tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- Housekeeping Task Management -->
-        <section id="tasks">
-            <h2>Housekeeping Team Task Roster</h2>
-            <p style="font-size: 13px; color: #666;">Assign specific room sanitation tasks to housekeeping team personnel.</p>
-            
-            <form id="taskForm" style="max-width: 600px; margin-bottom: 20px;">
-                <label for="taskUnit">Select Unit:</label>
-                <select id="taskUnit" required></select>
-
-                <label for="taskStaff">Assign Housekeeper Staff:</label>
-                <input type="text" id="taskStaff" placeholder="Staff member name" required>
-
-                <label for="taskPriority">Priority:</label>
-                <select id="taskPriority" required>
-                    <option value="Normal">Normal Turnaround</option>
-                    <option value="High Priority">High Priority (VIP / Quick Turnaround)</option>
-                </select>
-
-                <button type="submit" style="margin-top: 12px;" class="checkin-button">Assign Cleaning Task</button>
-            </form>
-
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Task ID</th>
-                            <th>Unit</th>
-                            <th>Assigned Staff</th>
-                            <th>Priority</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="taskTable"></tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- Staff Shift & Audit Logs -->
-        <section id="audit">
-            <h2>Staff Activity Audit Trail</h2>
-            <p style="font-size: 13px; color: #666;">Record of sensitive administrative and front desk actions for security oversight.</p>
-            
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Timestamp</th>
-                            <th>Staff Role / User</th>
-                            <th>Action Performed</th>
-                            <th>Details</th>
-                        </tr>
-                    </thead>
-                    <tbody id="auditTable"></tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- Financial Analytics & Reports -->
-        <section id="analytics">
-            <h2>Financial & Revenue Analytics</h2>
-            <div class="dashboard-cards">
-                <div class="card" style="background: #0d6efd;">
-                    <h3>Gross Revenue</h3>
-                    <p id="statGrossRev">0</p>
-                </div>
-                <div class="card" style="background: #198754;">
-                    <h3>M-Pesa Collections</h3>
-                    <p id="statMpesa">0</p>
-                </div>
-                <div class="card" style="background: #6f42c1;">
-                    <h3>Cash Collections</h3>
-                    <p id="statCash">0</p>
-                </div>
-                <div class="card" style="background: #fd7e14;">
-                    <h3>Occupancy Rate</h3>
-                    <p id="statOccupancy">0%</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Guest Reviews Section -->
-        <section id="reviews">
-            <h2>Guest Feedback & Ratings</h2>
-            <form id="reviewForm" style="max-width: 600px; margin-bottom: 25px;">
-                <label for="reviewGuestName">Your Name:</label>
-                <input type="text" id="reviewGuestName" placeholder="Enter your name" required>
-
-                <label for="reviewRating">Rating:</label>
-                <select id="reviewRating" required>
-                    <option value="5">⭐⭐⭐⭐⭐ (5 - Excellent)</option>
-                    <option value="4">⭐⭐⭐⭐ (4 - Very Good)</option>
-                    <option value="3">⭐⭐⭐ (3 - Average)</option>
-                    <option value="2">⭐⭐ (2 - Fair)</option>
-                    <option value="1">⭐ (1 - Poor)</option>
-                </select>
-
-                <label for="reviewComment">Feedback:</label>
-                <textarea id="reviewComment" rows="3" placeholder="Tell us about your stay..." required></textarea>
-
-                <button type="submit" style="margin-top: 12px;">Submit Review</button>
-            </form>
-
-            <h3>Recent Guest Reviews</h3>
-            <div id="reviewsGrid" class="reviews-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin-top: 15px;"></div>
-        </section>
-
-    </main>
-
-    <!-- Modal Box for Interactive Popups / Receipts -->
-    <div id="customModal" class="modal-overlay">
-        <div class="modal-content">
-            <h3 id="modalTitle">Notification / Document</h3>
-            <div id="modalBody" style="margin: 15px 0; font-size: 14px; line-height: 1.5;"></div>
-            <div style="text-align: right;">
-                <button type="button" class="secondary-button" onclick="closeModal()">Close</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="toastContainer"></div>
-
-    <footer>
-        <p>&copy; 2026 Grand Palace Hotel & Resort | Enterprise Elite Edition</p>
-    </footer>
-
-    <script>
-        // Currency Rates (Base currency KES)
-        const exchangeRates = { KES: 1, USD: 0.0077, EUR: 0.0073, GBP: 0.0062 };
-        const currencySymbols = { KES: "KSh ", USD: "$", EUR: "€", GBP: "£" };
-        let currentCurrency = "KES";
-
-        document.getElementById("globalCurrency").addEventListener("change", (e) => {
-            currentCurrency = e.target.value;
-            renderAll();
-        });
-
-        function formatMoney(amtInKES) {
-            const rate = exchangeRates[currentCurrency];
-            const converted = Number(amtInKES) * rate;
-            const symbol = currencySymbols[currentCurrency];
-            if (currentCurrency === "KES") {
-                return symbol + Math.round(converted).toLocaleString("en-KE");
-            }
-            return symbol + converted.toFixed(2);
-        }
-
-        const roomPrices = {
-            Single: 2000, Double: 3500, Deluxe: 5000, Suite: 8000,
-            SwimmingPool: 1500, BoatRiding: 2500, Food: 1800, Drinks: 1200, Spa: 4000, Conference: 15000
-        };
-
-        const roomImages = {
-            Single: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=600&q=80",
-            Double: "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=600&q=80",
-            Deluxe: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=600&q=80",
-            Suite: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=600&q=80",
-            SwimmingPool: "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=600&q=80",
-            BoatRiding: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=600&q=80",
-            Food: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80",
-            Drinks: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=600&q=80",
-            Spa: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=600&q=80",
-            Conference: "https://images.unsplash.com/photo-1517502884422-41eaead166d4?auto=format&fit=crop&w=600&q=80"
-        };
-
-        const roomCapacity = { Single: 3, Double: 3, Deluxe: 2, Suite: 2, SwimmingPool: 4, BoatRiding: 4, Food: 20, Drinks: 20, Spa: 2, Conference: 1 };
-        const TOTAL_UNITS = Object.values(roomCapacity).reduce((a, b) => a + b, 0);
-
-        const ROLES = {
-            MANAGER: { pin: "1234", name: "General Manager" },
-            RECEPTIONIST: { pin: "1111", name: "Front Desk Receptionist" },
-            HOUSEKEEPER: { pin: "2222", name: "Housekeeping Supervisor" }
-        };
-        let currentUserRole = null;
-
-        let bookings = JSON.parse(localStorage.getItem("hotelBookings") || "[]");
-        let housekeepingStatus = JSON.parse(localStorage.getItem("hotelHousekeeping") || "{}");
-        let posCharges = JSON.parse(localStorage.getItem("hotelPosCharges") || "{}");
-        let reviews = JSON.parse(localStorage.getItem("hotelReviews") || "[]");
-        let maintenanceTickets = JSON.parse(localStorage.getItem("hotelMaintenance") || "[]");
-        let housekeepingTasks = JSON.parse(localStorage.getItem("hotelTasks") || "[]");
-        let auditLogs = JSON.parse(localStorage.getItem("hotelAudit") || "[]");
-
-        if (Object.keys(housekeepingStatus).length === 0) {
-            Object.keys(roomCapacity).forEach(type => {
-                for (let i = 1; i <= roomCapacity[type]; i++) housekeepingStatus[`${type}-${i}`] = "Clean";
-            });
-        }
-
-        function showToast(msg) {
-            const container = document.getElementById("toastContainer");
-            const toast = document.createElement("div");
-            toast.className = "toast";
-            toast.textContent = "🔔 " + msg;
-            container.appendChild(toast);
-            setTimeout(() => toast.remove(), 4000);
-        }
-
-        function logAudit(action, details) {
-            auditLogs.unshift({
-                timestamp: new Date().toLocaleString(),
-                role: currentUserRole ? currentUserRole.name : "Guest / Public User",
-                action,
-                details
-            });
-            saveData();
-        }
-
-        function escapeHTML(str) { return String(str || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-
-        function saveData() {
-            localStorage.setItem("hotelBookings", JSON.stringify(bookings));
-            localStorage.setItem("hotelHousekeeping", JSON.stringify(housekeepingStatus));
-            localStorage.setItem("hotelPosCharges", JSON.stringify(posCharges));
-            localStorage.setItem("hotelReviews", JSON.stringify(reviews));
-            localStorage.setItem("hotelMaintenance", JSON.stringify(maintenanceTickets));
-            localStorage.setItem("hotelTasks", JSON.stringify(housekeepingTasks));
-            localStorage.setItem("hotelAudit", JSON.stringify(auditLogs));
-        }
-
-        function openModal(title, htmlContent) {
-            document.getElementById("modalTitle").textContent = title;
-            document.getElementById("modalBody").innerHTML = htmlContent;
-            document.getElementById("customModal").style.display = "flex";
-        }
-        function closeModal() {
-            document.getElementById("customModal").style.display = "none";
-        }
-
-        // Auth Handler
-        document.getElementById("authBtn").addEventListener("click", () => {
-            if (currentUserRole) {
-                logAudit("Staff Logout", `Logged out from ${currentUserRole.name}`);
-                currentUserRole = null;
-                document.getElementById("currentRoleDisplay").textContent = "Guest / Public";
-                document.getElementById("authBtn").textContent = "Staff Login";
-                showToast("Logged out of staff profile.");
-            } else {
-                const pin = prompt("Enter Staff PIN (Manager: 1234, Reception: 1111, Housekeeper: 2222):");
-                if (pin === ROLES.MANAGER.pin) currentUserRole = ROLES.MANAGER;
-                else if (pin === ROLES.RECEPTIONIST.pin) currentUserRole = ROLES.RECEPTIONIST;
-                else if (pin === ROLES.HOUSEKEEPER.pin) currentUserRole = ROLES.HOUSEKEEPER;
-                else if (pin !== null) { alert("Invalid PIN."); return; }
-
-                if (currentUserRole) {
-                    document.getElementById("currentRoleDisplay").textContent = currentUserRole.name;
-                    document.getElementById("authBtn").textContent = "Logout";
-                    logAudit("Staff Login", `Successfully authenticated as ${currentUserRole.name}`);
-                    showToast("Logged in as " + currentUserRole.name);
-                }
-            }
-            renderAll();
-        });
-
-        // Calculations & Dates
-        function dateNum(d) { const p = d.split("-").map(Number); return Date.UTC(p[0], p[1]-1, p[2])/86400000; }
-        function calcNights(s, e) { return dateNum(e) - dateNum(s); }
-        function datesOverlap(s1, e1, s2, e2) { return dateNum(s1) < dateNum(e2) && dateNum(e1) > dateNum(s2); }
-
-        function isRoomAvailable(type, start, end, excludeId = null) {
-            const count = bookings.filter(b => b.roomType === type && b.id !== excludeId && b.status !== "Cancelled" && b.status !== "Checked-out" && datesOverlap(start, end, b.checkIn, b.checkOut)).length;
-            return count < roomCapacity[type];
-        }
-
-        // Booking Form Logic
-        const roomTypeEl = document.getElementById("roomType");
-        roomTypeEl.addEventListener("change", () => {
-            const t = roomTypeEl.value;
-            if (roomImages[t]) {
-                document.getElementById("roomImage").src = roomImages[t];
-                document.getElementById("roomPreviewBox").style.display = "block";
-            } else {
-                document.getElementById("roomPreviewBox").style.display = "none";
-            }
-            updatePrice();
-        });
-
-        const checkInEl = document.getElementById("checkIn"), checkOutEl = document.getElementById("checkOut");
-        checkInEl.addEventListener("change", () => { checkOutEl.min = checkInEl.value; updatePrice(); });
-        checkOutEl.addEventListener("change", updatePrice);
-        document.getElementById("paymentStructure").addEventListener("change", updatePrice);
-
-        function updatePrice() {
-            const t = roomTypeEl.value, s = checkInEl.value, e = checkOutEl.value;
-            const structure = document.getElementById("paymentStructure").value;
-            if (!t || !s || !e || calcNights(s, e) <= 0) { 
-                document.getElementById("totalPrice").textContent = formatMoney(0);
-                document.getElementById("dueNowPrice").textContent = formatMoney(0);
-                return; 
-            }
-            const total = roomPrices[t] * calcNights(s, e);
-            const dueNow = structure === "Deposit50" ? total / 2 : total;
-            document.getElementById("totalPrice").textContent = formatMoney(total);
-            document.getElementById("dueNowPrice").textContent = formatMoney(dueNow);
-        }
-
-        document.getElementById("paymentMethod").addEventListener("change", (e) => {
-            document.getElementById("mpesaBox").style.display = e.target.value === "MPesa" ? "block" : "none";
-        });
-
-        document.getElementById("bookingForm").addEventListener("submit", (e) => {
-            e.preventDefault();
-            const name = document.getElementById("guestName").value.trim();
-            const phone = document.getElementById("phone").value.trim();
-            const type = roomTypeEl.value;
-            const start = checkInEl.value, end = checkOutEl.value;
-            const payMethod = document.getElementById("paymentMethod").value;
-            const structure = document.getElementById("paymentStructure").value;
-            const nights = calcNights(start, end);
-
-            if (nights <= 0) { alert("Check-out must be after check-in."); return; }
-            if (!isRoomAvailable(type, start, end)) { alert("No slots available for " + type + " on selected dates."); return; }
-
-            const total = roomPrices[type] * nights;
-            const paidNow = structure === "Deposit50" ? total / 2 : total;
-            const balanceDue = total - paidNow;
-
-            if (payMethod === "MPesa") {
-                const mPhone = document.getElementById("mpesaPhone").value.trim();
-                if (!mPhone) { alert("Enter M-Pesa phone number."); return; }
-                showToast(`M-Pesa STK push sent to ${mPhone}. Payment confirmed!`);
-            }
-
-            const booking = {
-                id: "BK-" + Date.now().toString().slice(-6),
-                guestName: name, phone, roomType: type, checkIn: start, checkOut: end, nights,
-                paymentMethod: payMethod, paymentStructure: structure, specialRequests: document.getElementById("specialRequests").value.trim(),
-                total, balanceDue, status: "Booked"
-            };
-
-            bookings.push(booking);
-            logAudit("New Reservation", `Created booking ${booking.id} for ${name} (${type})`);
-            saveData();
-            renderAll();
-            document.getElementById("bookingForm").reset();
-            document.getElementById("roomPreviewBox").style.display = "none";
-            document.getElementById("mpesaBox").style.display = "none";
-            updatePrice();
-
-            openModal("Automated Notification / Receipt Simulator", `
-                <p style="color:#198754; font-weight:bold;">✉️ Automated Email & SMS confirmation generated successfully.</p>
-                <hr>
-                <p><strong>Reference ID:</strong> ${booking.id}</p>
-                <p><strong>Guest:</strong> ${booking.guestName}</p>
-                <p><strong>Service:</strong> ${booking.roomType} (${nights} nights)</p>
-                <p><strong>Total Amount:</strong> ${formatMoney(total)}</p>
-                <p><strong>Balance Due at Arrival:</strong> ${formatMoney(balanceDue)}</p>
-                <p style="font-size:12px; color:#666; margin-top:10px;">Sent via SMS to ${phone} and confirmation email dispatched.</p>
-            `);
-        });
-
-        // Render Bookings Table
-        const searchInput = document.getElementById("searchBooking");
-        searchInput.addEventListener("input", renderBookings);
-
-        function renderBookings() {
-            const q = searchInput.value.toLowerCase();
-            const filtered = bookings.filter(b => b.guestName.toLowerCase().includes(q) || b.phone.includes(q) || b.id.toLowerCase().includes(q));
-            const tbody = document.getElementById("bookingTable");
-            tbody.innerHTML = "";
-
-            if (filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="9">No records found.</td></tr>`; return; }
-
-            filtered.forEach(b => {
-                let actions = `<button class="invoice-button" onclick="printInvoice('${b.id}')">Invoice</button>`;
-                
-                if (currentUserRole && (currentUserRole === ROLES.MANAGER || currentUserRole === ROLES.RECEPTIONIST)) {
-                    if (b.status === "Booked") {
-                        actions += `<button class="checkin-button" onclick="updateStatus('${b.id}', 'Checked-in')">Check In</button>`;
-                        if (currentUserRole === ROLES.MANAGER) actions += `<button class="cancel-button" onclick="updateStatus('${b.id}', 'Cancelled')">Cancel</button>`;
-                    } else if (b.status === "Checked-in") {
-                        actions += `<button class="checkout-button" onclick="updateStatus('${b.id}', 'Checked-out')">Check Out</button>`;
-                        actions += `<button class="secondary-button" onclick="promptRoomSwap('${b.id}')">Swap Room</button>`;
-                    }
-                }
-
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${escapeHTML(b.id)}</td>
-                        <td>${escapeHTML(b.guestName)}</td>
-                        <td>${escapeHTML(b.phone)}</td>
-                        <td>${escapeHTML(b.roomType)}</td>
-                        <td>${escapeHTML(b.checkIn)} to ${escapeHTML(b.checkOut)}</td>
-                        <td>${escapeHTML(b.paymentMethod)} (${escapeHTML(b.paymentStructure)})</td>
-                        <td style="color:${b.balanceDue > 0 ? 'red' : 'green'}; font-weight:bold;">${formatMoney(b.balanceDue)}</td>
-                        <td><span class="status status-${b.status}">${b.status}</span></td>
-                        <td>${actions}</td>
-                    </tr>
-                `;
-            });
-        }
-
-        window.updateStatus = function(id, status) {
-            const b = bookings.find(x => x.id === id);
-            if (b) {
-                if (status === 'Checked-out') {
-                    b.balanceDue = 0;
-                }
-                b.status = status;
-                logAudit("Status Update", `Booking ${id} status changed to ${status}`);
-                saveData();
-                renderAll();
-                showToast(`Booking ${id} status updated to ${status}`);
-            }
-        };
-
-        window.promptRoomSwap = function(id) {
-            const b = bookings.find(x => x.id === id);
-            if (!b) return;
-            const newType = prompt(`Current service type: ${b.roomType}. Enter new service / room type (Single, Double, Deluxe, Suite):`, b.roomType);
-            if (newType && roomPrices[newType]) {
-                const oldType = b.roomType;
-                b.roomType = newType;
-                b.total = roomPrices[newType] * b.nights;
-                b.balanceDue = Math.max(0, b.total - (b.total / (b.paymentStructure === 'Deposit50' ? 2 : 1))); 
-                logAudit("Room Swap", `Swapped booking ${id} from ${oldType} to ${newType}`);
-                saveData();
-                renderAll();
-                showToast(`Successfully swapped guest to ${newType}`);
-            } else if (newType) {
-                alert("Invalid room type specified.");
-            }
-        };
-
-        window.printInvoice = function(id) {
-            const b = bookings.find(x => x.id === id);
-            if (!b) return;
-            const extraCharges = posCharges[b.id] || [];
-            const extraTotal = extraCharges.reduce((sum, item) => sum + item.cost, 0);
-            const grandTotal = b.total + extraTotal;
-
-            const win = window.open('', '_blank');
-            win.document.write(`
-                <html><head><title>Invoice ${b.id}</title>
-                <style>body{font-family:Arial;padding:30px;max-width:800px;margin:auto;} h1{color:#123456;}</style></head>
-                <body>
-                    <h1>🏨 Grand Palace Resort Invoice</h1>
-                    <p><strong>Booking ID:</strong> ${b.id}</p>
-                    <p><strong>Guest Name:</strong> ${b.guestName}</p>
-                    <p><strong>Dates:</strong> ${b.checkIn} to ${b.checkOut} (${b.nights} nights)</p>
-                    <hr>
-                    <p>Room/Service (${b.roomType}): <strong>${formatMoney(b.total)}</strong></p>
-                    ${extraCharges.length > 0 ? `<p>Ancillary POS Charges Total: ${formatMoney(extraTotal)}</p>` : ''}
-                    <h3>Grand Total: ${formatMoney(grandTotal)}</h3>
-                    <p>Balance Due: <strong>${formatMoney(b.balanceDue + extraTotal)}</strong></p>
-                    <script>window.print();<\/script>
-                </body></html>
-            `);
-            win.document.close();
-        };
-
-        document.getElementById("exportCsvBtn").addEventListener("click", () => {
-            if (bookings.length === 0) { alert("No bookings to export."); return; }
-            let csvContent = "data:text/csv;charset=utf-8,ID,Guest Name,Contact,Room Type,Check In,Check Out,Nights,Payment,Total,Balance Due,Status\n";
-            bookings.forEach(b => {
-                csvContent += [b.id, `"${b.guestName}"`, b.phone, b.roomType, b.checkIn, b.checkOut, b.nights, b.paymentMethod, b.total, b.balanceDue, b.status].join(",") + "\n";
-            });
-            const link = document.createElement("a");
-            link.setAttribute("href", encodeURI(csvContent));
-            link.setAttribute("download", `hotel_bookings_${Date.now()}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            logAudit("CSV Export", "Exported booking records to CSV");
-            showToast("Exported bookings data to CSV file.");
-        });
-
-        // Visual Floor Plan Grid
-        function renderFloorPlan() {
-            const grid = document.getElementById("floorGrid");
-            grid.innerHTML = "";
-            Object.keys(housekeepingStatus).forEach(unit => {
-                const status = housekeepingStatus[unit];
-                const card = document.createElement("div");
-                card.className = `floor-card ${status === 'Dirty' ? 'dirty' : ''}`;
-                card.innerHTML = `
-                    <h4>Unit: ${escapeHTML(unit)}</h4>
-                    <p>Cleaning: <strong>${escapeHTML(status)}</strong></p>
-                    ${(currentUserRole === ROLES.MANAGER || currentUserRole === ROLES.HOUSEKEEPER) ? `
-                        <button class="secondary-button" onclick="toggleHK('${unit}')">Toggle Cleanliness</button>
-                    ` : ''}
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        window.toggleHK = function(unit) {
-            housekeepingStatus[unit] = housekeepingStatus[unit] === "Clean" ? "Dirty" : "Clean";
-            logAudit("Housekeeping Flag", `Toggled unit ${unit} status to ${housekeepingStatus[unit]}`);
-            saveData();
-            renderFloorPlan();
-            showToast(`Unit ${unit} marked as ${housekeepingStatus[unit]}`);
-        };
-
-        function populateUnitDropdowns() {
-            const maintSelect = document.getElementById("maintUnit");
-            const taskSelect = document.getElementById("taskUnit");
-            maintSelect.innerHTML = "";
-            taskSelect.innerHTML = "";
-            Object.keys(housekeepingStatus).forEach(u => {
-                maintSelect.innerHTML += `<option value="${u}">Unit ${u}</option>`;
-                taskSelect.innerHTML += `<option value="${u}">Unit ${u}</option>`;
-            });
-        }
-
-        // POS Module
-        const posSelect = document.getElementById("posBookingSelect");
-        function renderPOSDropdown() {
-            posSelect.innerHTML = "";
-            const activeGuests = bookings.filter(b => b.status === "Checked-in");
-            if (activeGuests.length === 0) {
-                posSelect.innerHTML = `<option value="">No checked-in guests available</option>`;
-                return;
-            }
-            activeGuests.forEach(g => {
-                posSelect.innerHTML += `<option value="${g.id}">${g.guestName} (${g.roomType} - ID: ${g.id})</option>`;
-            });
-        }
-
-        document.getElementById("posForm").addEventListener("submit", (e) => {
-            e.preventDefault();
-            const bId = posSelect.value;
-            if (!bId) { alert("Select a checked-in guest."); return; }
-            const itemText = document.getElementById("posItem").value;
-            const qty = Number(document.getElementById("posQty").value);
-            const unitPriceMatch = itemText.match(/[\d,]+/);
-            const unitPrice = unitPriceMatch ? Number(unitPriceMatch[0].replace(/,/g, '')) : 1000;
-            const cost = unitPrice * qty;
-
-            if (!posCharges[bId]) posCharges[bId] = [];
-            posCharges[bId].push({ item: `${qty}x ${itemText.split(' - ')[0]}`, cost });
-            
-            const b = bookings.find(x => x.id === bId);
-            if (b) b.balanceDue += cost;
-
-            logAudit("POS Billing", `Posted ${cost} KES charge to guest ${bId}`);
-            saveData();
-            showToast(`Added POS charge to guest tab.`);
-            document.getElementById("posForm").reset();
-            renderBookings();
-        });
-
-        // Loyalty & Rewards Club Module
-        function renderLoyalty() {
-            const tbody = document.getElementById("loyaltyTable");
-            tbody.innerHTML = "";
-            
-            // Aggregate spending per guest name
-            const guestMap = {};
-            bookings.forEach(b => {
-                if (b.status !== "Cancelled") {
-                    if (!guestMap[b.guestName]) guestMap[b.guestName] = { phone: b.phone, spent: 0 };
-                    guestMap[b.guestName].spent += b.total;
-                }
-            });
-            Object.keys(posCharges).forEach(bId => {
-                const b = bookings.find(x => x.id === bId);
-                if (b && guestMap[b.guestName]) {
-                    posCharges[bId].forEach(charge => guestMap[b.guestName].spent += charge.cost);
-                }
-            });
-
-            const guests = Object.keys(guestMap);
-            if (guests.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5">No guest loyalty data available.</td></tr>`;
-                return;
-            }
-
-            guests.forEach(name => {
-                const data = guestMap[name];
-                const points = Math.floor(data.spent / 100); // 1 point per 100 KES spent
-                let tier = "Bronze";
-                if (points >= 500) tier = "Gold ⭐";
-                else if (points >= 200) tier = "Silver 🥈";
-
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${escapeHTML(name)}</td>
-                        <td>${escapeHTML(data.phone)}</td>
-                        <td>${formatMoney(data.spent)}</td>
-                        <td><strong>${points} pts</strong></td>
-                        <td><span class="status status-Checked-in">${tier}</span></td>
-                    </tr>
-                `;
-            });
-        }
-
-        // Maintenance Module
-        document.getElementById("maintenanceForm").addEventListener("submit", (e) => {
-            e.preventDefault();
-            const unit = document.getElementById("maintUnit").value;
-            const issue = document.getElementById("maintIssue").value.trim();
-            const priority = document.getElementById("maintPriority").value;
-
-            maintenanceTickets.push({
-                id: "MT-" + Date.now().toString().slice(-4),
-                unit, issue, priority, status: "Pending"
-            });
-            logAudit("Maintenance", `Logged issue for ${unit}: ${issue}`);
-            saveData();
-            renderMaintenance();
-            document.getElementById("maintenanceForm").reset();
-            showToast("Maintenance ticket logged successfully.");
-        });
-
-        function renderMaintenance() {
-            const tbody = document.getElementById("maintenanceTable");
-            tbody.innerHTML = "";
-            if (maintenanceTickets.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6">No maintenance issues logged.</td></tr>`;
-                return;
-            }
-            maintenanceTickets.forEach(m => {
-                tbody.innerHTML = `
-                    <tr>
-                        <td>${m.id}</td>
-                        <td>${m.unit}</td>
-                        <td>${escapeHTML(m.issue)}</td>
-                        <td>${m.priority}</td>
-                        <td><span class="status status-${m.status === 'Resolved' ? 'Checked-out' : 'Booked'}">${m.status}</span></td>
-                        <td>${m.status !== 'Resolved' ? `<button class="checkin-button" onclick="resolveMaintenance('${m.id}')">Mark Resolved</button>` : 'Completed'}</td>
-                    </tr>
-                `;
-            });
-        }
-
-        window.resolveMaintenance = function(id) {
-            const ticket = maintenanceTickets.find(t => t.id === id);
-            if (ticket) {
-                ticket.status = "Resolved";
-                logAudit("Maintenance", `Resolved ticket ${id} for ${ticket.unit}`);
-                saveData();
-                renderMaintenance();
-                showToast(`Ticket ${id} marked as resolved.`);
-            }
-        };
-
-        // Housekeeping Task Roster Module
-        document.getElementById("taskForm").addEventListener("submit", (e) => {
-            e.preventDefault();
-            const unit = document.getElementById("taskUnit").value;
-            const staff = document.getElementById("taskStaff").value.trim();
-            const priority = document.getElementById("taskPriority").value;
-
-            housekeepingTasks.push({
-                id: "TSK-" + Date.now().toString().slice(-4),
-                unit, staff, priority, status: "Assigned"
-            });
-            logAudit("Task Roster", `Assigned cleaning task for ${unit} to ${staff}`);
-            saveData();
-            renderTasks();
-            document.getElementById("taskForm").reset();
-            showToast("Cleaning task assigned successfully.");
-        });
-
-        function renderTasks() {
-            const tbody = document.getElementById("taskTable");
-            tbody.innerHTML = "";
-            if (housekeepingTasks.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6">No cleaning tasks assigned.</td></tr>`;
-                return;
-            }
-            housekeepingTasks.forEach(t => {
-                tbody.innerHTML = `
-                    <tr>
-                        <td>${t.id}</td>
-                        <td>${t.unit}</td>
-                        <td>${escapeHTML(t.staff)}</td>
-                        <td>${t.priority}</td>
-                        <td><span class="status status-${t.status === 'Completed' ? 'Checked-out' : 'Booked'}">${t.status}</span></td>
-                        <td>${t.status !== 'Completed' ? `<button class="checkin-button" onclick="completeTask('${t.id}')">Complete</button>` : 'Done'}</td>
-                    </tr>
-                `;
-            });
-        }
-
-        window.completeTask = function(id) {
-            const task = housekeepingTasks.find(t => t.id === id);
-            if (task) {
-                task.status = "Completed";
-                housekeepingStatus[task.unit] = "Clean";
-                logAudit("Task Roster", `Completed task ${id} for unit ${task.unit}`);
-                saveData();
-                renderTasks();
-                renderFloorPlan();
-                showToast(`Task ${id} completed. Unit ${task.unit} marked clean.`);
-            }
-        };
-
-        // Audit Trail Module
-        function renderAuditLogs() {
-            const tbody = document.getElementById("auditTable");
-            tbody.innerHTML = "";
-            if (auditLogs.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4">No audit logs recorded yet.</td></tr>`;
-                return;
-            }
-            auditLogs.forEach(log => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${log.timestamp}</td>
-                        <td><strong>${escapeHTML(log.role)}</strong></td>
-                        <td>${escapeHTML(log.action)}</td>
-                        <td>${escapeHTML(log.details)}</td>
-                    </tr>
-                `;
-            });
-        }
-
-        // Analytics Dashboard
-        function renderAnalytics() {
-            let gross = 0, mpesa = 0, cash = 0;
-            bookings.forEach(b => {
-                if (b.status !== "Cancelled") {
-                    gross += b.total;
-                    if (b.paymentMethod === "MPesa") mpesa += b.total;
-                    else cash += b.total;
-                }
-            });
-            Object.values(posCharges).forEach(list => list.forEach(i => gross += i.cost));
-
-            const checkedInCount = bookings.filter(b => b.status === "Checked-in").length;
-            const occupancy = Math.round((checkedInCount / TOTAL_UNITS) * 100);
-
-            document.getElementById("statGrossRev").textContent = formatMoney(gross);
-            document.getElementById("statMpesa").textContent = formatMoney(mpesa);
-            document.getElementById("statCash").textContent = formatMoney(cash);
-            document.getElementById("statOccupancy").textContent = occupancy + "%";
-
-            document.getElementById("totalRooms").textContent = TOTAL_UNITS;
-            document.getElementById("availableRooms").textContent = Math.max(0, TOTAL_UNITS - checkedInCount);
-            document.getElementById("activeBookings").textContent = bookings.filter(b => b.status === "Booked").length;
-            document.getElementById("checkedInGuests").textContent = checkedInCount;
-        }
-
-        // Reviews Module
-        document.getElementById("reviewForm").addEventListener("submit", (e) => {
-            e.preventDefault();
-            const name = document.getElementById("reviewGuestName").value.trim();
-            const rating = document.getElementById("reviewRating").value;
-            const comment = document.getElementById("reviewComment").value.trim();
-
-            reviews.unshift({ name, rating, comment, date: new Date().toLocaleDateString() });
-            logAudit("Guest Feedback", `Submitted review by ${name} (${rating} stars)`);
-            saveData();
-            renderReviews();
-            document.getElementById("reviewForm").reset();
-            showToast("Thank you for your feedback!");
-        });
-
-        function renderReviews() {
-            const container =
+<header>
+    <h1>🏨 Grand Palace Hotel & Resort</h1>
+    <p>Luxury Accommodation, Recreation, Fine Dining & Hospitality</p>
+</header>
+
+<nav>
+    <a href="#home">Home</a>
+    <a href="#rooms">Rooms</a>
+    <a href="#recreation">Recreation</a>
+    <a href="#food">Food</a>
+    <a href="#beverages">Beverages</a>
+    <a href="#booking">Reservations</a>
+</nav>
+
+<section class="intro" id="home">
+    <h2>Explore Our Hotel Gallery</h2>
+    <p>
+        Discover beautiful accommodation, relaxing recreational
+        facilities, delicious meals and refreshing beverages
+        at Grand Palace Hotel & Resort.
+    </p>
+</section>
+
+<div class="filters">
+    <button class="active" onclick="filterGallery('all',this)">All Images</button>
+    <button onclick="filterGallery('rooms',this)">Rooms</button>
+    <button onclick="filterGallery('recreation',this)">Recreation</button>
+    <button onclick="filterGallery('food',this)">Food</button>
+    <button onclick="filterGallery('beverages',this)">Beverages</button>
+</div>
+
+<main class="gallery-section">
+
+<!-- ROOMS -->
+<section id="rooms" class="gallery-category">
+<h2 class="category-title">🛏️ Luxury Rooms & Accommodation</h2>
+
+<div class="gallery">
+
+<div class="gallery-card" data-category="rooms">
+<img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800" onclick="preview(this)">
+<div class="gallery-info">
+<h3>Single Room</h3>
+<p>Comfortable accommodation with elegant furnishings and a relaxing atmosphere.</p>
+</div>
+</div>
+
+<div class="gallery-card" data-category="rooms">
+<img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800" onclick="preview(this)">
+<div class="gallery-info">
+<h3>Double Room</h3>
+<p>Spacious accommodation ideal for couples and guests travelling together.</p>
+</div>
+</div>
+
+<div class="gallery-card" data-category="rooms">
+<img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800" onclick="preview(this)">
+<div class="gallery-info">
+<h3>Deluxe Room</h3>
+<p>Premium room experience with beautiful interiors and modern comfort.</p>
+</div>
+</div>
+
+<div class="gallery-card" data-category="rooms">
+<img src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800" onclick="preview(this)">
+<div class="gallery-info">
+<h3>Presidential Suite</h3>
+<p>Luxury accommodation with exceptional space and sophisticated design.</p>
+</div>
+</div>
+
+<div class="gallery-card" data-category="rooms">
+<img src="https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800" onclick="preview(this)">
+<div class="gallery-info">
+<h3>Luxury Bedroom</h3>
+<p>Beautifully designed sleeping spaces for a peaceful stay.</p>
+</div>
+</div>
+
+<div class="gallery-card" data-category="rooms">
+<img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800" onclick="preview(this)">
+<div class="gallery-info">
+<h3>Executive Interior</h3>
+<p>Modern interiors with stylish furniture and premium finishing.</p>
+</div>
+</div>
+
+</div>
+</section>
+
+<!-- RECREATION -->
+<section id="recreation" class="gallery-category">
+<h2 class="category-title">🏊 Recreation & Entertainment</h2>
+
+<div class="gallery">
+
+<div class="gallery-card" data-category="recreation">
+<img src="https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?w=800" onclick="preview(this)">
+<div class="gallery-info">
+<h3>Swimming Pool</h3>
+<p>Enjoy a refreshing swim in our beautiful swimming pool.</p>
+</div>
+</div>
+
+<div class="gallery-card" data-category="recreation">
+<img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800" onclick="preview(this)">
+<div class="gallery-info">
+<h3>Boat Riding</h3>
+<p>Experience exciting water adventures and scenic boat rides.</p>
+</div>
+</div>
+
+<div class="gallery-card" data-category="recreation">
+<img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800" onclick="preview(this)">
+<div class="gallery-info">
+<h3>Spa & Wellness</h3>
+<p>Relax and rejuvenate with our wellness and massage services.</p>
+</div>
+</div>
+
+<div class="gallery-card" data-category="recreation">
+<img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800" onclick="preview(this)">
+<div class="gallery-info">
+<h3>Fitness Centre</h3>
+<p>Keep fit using modern fitness and exercise facilities.</p>
+</div>
+</div>
+
+<div class="gallery-card" data-category="recreation">
+<img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800" onclick="preview(this)">
+<div class="gallery-info">
+<h3>Outdoor Dining & Leisure</h3>
+<p>Enjoy relaxing moments in our welcoming hospitality spaces.</p>
+</div>
+</div>
+
+<div class="gallery-card" data-category="recreation">
+<img src="https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=800" onclick="preview(this)">
+<div class="gallery-info">
+<h3>Events & Entertainment</h3>
+<p>Celebrate special occasions and unforgettable experiences.</p>
+</div>
+</div>
+
+</div>
+</section>
+
+<!-- FOOD -->
+<section id="food" class="gallery-category">
+<h2 class="category-title">🍽️ Restaurant & Delicious Food</h2>
+
+<div class="gallery">
+
+<div class="gallery-card" data-category="food">
+<img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800" onclick="preview(this)">
+<div class="gallery-info">
+<h3>Healthy Fresh Meals</h3>
+<p>Enjoy fresh salads and deliciously prepared healthy dishes.</p>
+</div>
+</div>
+
+<div class="gallery-card" data-category="food">
+<img src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800" onclick="preview(this)">
+<div class="gallery-info">
+<h3>Fine Dining</h3>
+<p>Experience carefully prepared meals with elegant presentation.</p>
+</div>
+</div>
+
+<div class="gallery-card" data-category="food">
+<img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800" onclick="preview(this)">
+<div class="gallery-info">
+<h3>Grilled Specialties</h3>
+<p>Delicious grilled dishes prepared by our kitchen team.</p>
+</div>
+</div>
+
+<div class="gallery-card" data-category="food">
+<img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800" onclick="preview(this)">
+<div class="gallery-info">
+<h3>Italian Cuisine</h3>
+<p>Enjoy delicious pizza and other international favourites.</p>
+</div>
+</div>
+
+<div class="gallery-card" data-category="food">
+<img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800" onclick="preview(this)">
+<div class="gallery-info">
+<h3>Chef's Special</h3>
+<p>Discover a selection of mouthwatering chef-inspired meals.</p>
+</div>
+</div>
+
+<div class="gallery-card" data-category="food">
+<img src="https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=800" onclick="preview(this)">
+<div class="gallery-info">
+<h3>Breakfast</h3>
+<p>Start your day with a delicious breakfast experience.</p>
+</div>
+</div>
+
+</div>
+</section>
+
+<!-- BEVERAGES -->
+<section id="beverages" class="gallery-category">
+<h2 class="category-title">🍹 Beverages & Refreshments</h2>
+
+<div class="gallery">
+
+<div class="gallery-card" data-category="beverages">
+<img src="https://images.unsplash.com/photo-1513558161293-cdaf765edfd4?w=800" onclick="preview(this)">
+<div class="gallery-info">
+<h3>Fresh Fruit Juice</h3>
+<p>Refreshing natural fruit juices prepared for our guests.</p>
+</div>
+</div>
+
+<div class="gallery-card" data-category="beverages">
+<img src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=800" onclick="preview(this)">
+<div class="gallery-info">
+<h3>Signature Cocktails</h3>
+<p>Discover beautifully presented signature drinks.</p>
+</div>
+</div>
+
+<div class="gallery-card" data-category="beverages">
+<img src="https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?w=800" onclick="preview(this)">
+<div class="gallery-info">
+<h3>Fresh Coffee</h3>
+<p>Enjoy freshly brewed coffee in a relaxing atmosphere.</p>
+</div>
+</div>
+
+<div class="gallery-card" data-category="beverages">
+<img src="https://images.unsplash.com/photo-1544145945-f90425340c7e?w=800" onclick="preview(this)">
+<div class="gallery-info">
+<h3>Mocktails</h3>
+<p>Refreshing non-alcoholic beverages for every occasion.</p>
+</div>
+</div>
+
+<div class="gallery-card" data-category="beverages">
+<img src="https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=800" onclick="preview(this)">
+<div class="gallery-info">
+<h3>Cold Refreshments</h3>
+<p>Enjoy refreshing cold drinks throughout your stay.</p>
+</div>
+</div>
+
+<div class="gallery-card" data-category="beverages">
+<img src="https://images.unsplash.com/photo-1543255006-d6395b6f1171?w=800" onclick="preview(this)">
+<div class="gallery-info">
+<h3>Tea Selection</h3>
+<p>Relax with a selection of delicious hot beverages.</p>
+</div>
+</div>
+
+</div>
+</section>
+
+</main>
+
+<!-- BOOKING -->
+<section class="booking" id="booking">
+<h2>Experience the Grand Palace Difference</h2>
+<p>Book your stay, enjoy our recreation facilities and experience exceptional dining.</p>
+<a href="index.html#booking">Book Your Reservation</a>
+</section>
+
+<!-- IMAGE PREVIEW MODAL -->
+<div class="modal" id="imageModal" onclick="closePreview()">
+<span class="close">&times;</span>
+<img id="previewImage" src="" alt="Gallery image preview">
+</div>
+
+<footer>
+<p>&copy; 2026 Grand Palace Hotel & Resort. All Rights Reserved.</p>
+<p>Luxury | Comfort | Recreation | Fine Dining</p>
+</footer>
+
+<script>
+
+// FILTER GALLERY
+function filterGallery(category, button) {
+
+    const cards = document.querySelectorAll(".gallery-card");
+    const sections = document.querySelectorAll(".gallery-category");
+
+    document.querySelectorAll(".filters button").forEach(btn => {
+        btn.classList.remove("active");
+    });
+
+    button.classList.add("active");
+
+    cards.forEach(card => {
+        card.style.display =
+            category === "all" ||
+            card.dataset.category === category
+            ? "block"
+            : "none";
+    });
+
+    sections.forEach(section => {
+        const visibleCards = section.querySelectorAll(
+            '.gallery-card:not([style*="display: none"])'
+        );
+
+        section.style.display =
+            category === "all" || visibleCards.length > 0
+            ? "block"
+            : "none";
+    });
+}
+
+// IMAGE PREVIEW
+function preview(img) {
+    document.getElementById("imageModal").style.display = "flex";
+    document.getElementById("previewImage").src = img.src;
+}
+
+// CLOSE PREVIEW
+function closePreview() {
+    document.getElementById("imageModal").style.display = "none";
+}
+
+document.addEventListener("keydown", function(e) {
+    if (e.key === "Escape") {
+        closePreview();
+    }
+});
+
+</script>
+
+</body>
+</html>
